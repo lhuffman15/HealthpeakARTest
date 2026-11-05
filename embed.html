@@ -23,7 +23,7 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #fff; color: var(--hp-ink); font-family: var(--hp-body); }
   body { padding: 0; }
-  html.is-standalone body { padding: 60px; }
+  html.is-standalone body { padding: 40px; }
   @media (max-width: 600px) { html.is-standalone body { padding: 20px; } }
   .hp-av { display: grid; gap: 16px; }
   .hp-eyebrow { margin: 0 0 6px; font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--hp-gold-deep); }
@@ -31,14 +31,14 @@
   /* View switcher */
   .hp-av__bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; }
   .hp-av__tabs[hidden] { display: none; }
-  .hp-av__bar:has(.hp-av__tabs[hidden]) { justify-content: flex-end; }
+  .hp-av__bar:has(.hp-av__tabs[hidden]) { display: none; }
   .hp-av__tabs { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--hp-cream); }
   .hp-av__tabs button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--hp-ink); font: 600 .9rem/1 var(--hp-body); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
   .hp-av__tabs button svg { width: 18px; height: 18px; color: var(--hp-gold-deep); }
   .hp-av__tabs button[aria-selected="true"] { background: var(--hp-ink); color: #fff; }
   .hp-av__tabs button[aria-selected="true"] svg { color: var(--hp-gold); }
   .hp-av__tabs button:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 2px; }
-  .hp-av__legend { display: flex; gap: 14px; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--hp-ink-soft); }
+  .hp-av__legend { display: flex; gap: 14px; margin-bottom: -8px; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--hp-ink-soft); }
   .hp-av__legend span { display: inline-flex; align-items: center; gap: 6px; }
   .hp-av__legend i { width: 12px; height: 12px; border-radius: 2px; background: #b58a2d; }
   .hp-av__legend i.leased { background: #fff; border: 1px solid var(--hp-line); }
@@ -145,7 +145,7 @@
   .hp-plan__head { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
   .hp-plan__title { margin: 0; font: 500 1.4rem/1.15 var(--hp-display); }
   .hp-plan__close { flex: none; width: 40px; height: 40px; border: 1px solid var(--hp-line); border-radius: 50%; background: #fff; color: var(--hp-ink); font-size: 1.25rem; cursor: pointer; }
-  .hp-plan__fig { margin: 0; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; border: 1px solid var(--hp-line); border-radius: 6px; background: var(--hp-paper); overflow: hidden; }
+  .hp-plan__fig { margin: 0; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; border: 1px solid var(--hp-line); border-radius: 6px; background: #fff; overflow: hidden; }
   .hp-plan__fig img { display: block; width: 100%; height: 100%; object-fit: contain; }
   .hp-plan__fig object { display: block; width: 100%; height: 100%; border: 0; }
   .hp-plan__fig p { margin: 0; padding: 24px; max-width: 42ch; text-align: center; color: var(--hp-ink-soft); line-height: 1.5; }
@@ -168,7 +168,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z"/><path d="M4 7.4l8 4.6 8-4.6M12 12v9.2"/></svg>3D &amp; AR
       </button>
     </div>
-    <div class="hp-av__legend" aria-hidden="true"><span><i></i>Available</span><span><i class="leased"></i>Leased</span></div>
   </div>
 
   <div class="hp-av__body">
@@ -227,6 +226,7 @@
         <div class="hp-qr__code" id="qr"></div>
         <p><strong>Put it on your desk.</strong> Scan with your phone camera, then tap View on your desk.</p>
       </aside>
+      <div class="hp-av__legend" aria-hidden="true"><span><i></i>Available</span><span><i class="leased"></i>Leased</span></div>
       <p class="hp-tip" id="tip">Click a gold building to see its available floors.</p>
     </div>
   </div>
