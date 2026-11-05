@@ -47,9 +47,14 @@
   /* Site plan view */
   .hp-plan2d { position: relative; aspect-ratio: 1224 / 792; }
   .hp-plan2d svg { display: block; width: 100%; height: 100%; }
-  .hp-plan2d .is-on { cursor: pointer; transition: filter .15s ease; outline: none; }
-  .hp-plan2d .is-on:hover, .hp-plan2d .is-on:focus-visible { filter: brightness(1.12) drop-shadow(0 0 6px rgba(163, 144, 104, .9)); }
-  .hp-plan2d .is-on.is-picked { filter: brightness(.82) drop-shadow(0 0 8px rgba(51, 53, 54, .55)); }
+  .hp-plan2d .is-on { cursor: pointer; transition: opacity .2s ease, filter .15s ease; outline: none; }
+  .hp-plan2d .is-on:hover, .hp-plan2d .is-on:focus-visible { filter: brightness(1.1); }
+  /* Selected building: dark outline around its footprint (the shapes inside the drop-shadow groups) */
+  .hp-plan2d .is-on.is-picked > g[filter] > * { stroke: #333536; stroke-width: 4px; stroke-linejoin: round; paint-order: stroke; }
+  .hp-plan2d .is-on:focus-visible > g[filter] > * { stroke: #333536; stroke-width: 3px; stroke-dasharray: 6 4; paint-order: stroke; }
+  /* While one is selected, the other gold buildings step back */
+  .hp-plan2d.has-pick .is-on:not(.is-picked) { opacity: .45; }
+  .hp-plan2d.has-pick .is-on:not(.is-picked):hover { opacity: .8; }
   .hp-plan2d__status { position: absolute; inset: 0; display: grid; place-items: center; color: var(--hp-ink-soft); font-size: .9rem; }
   .hp-go3d { position: absolute; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border: 0; border-radius: 999px; background: var(--hp-ink); color: #fff; font: 600 .86rem/1 var(--hp-body); cursor: pointer; box-shadow: 0 6px 16px rgba(51,53,54,.25); }
   .hp-go3d svg { width: 18px; height: 18px; color: var(--hp-gold); }
@@ -182,7 +187,7 @@
           camera-controls touch-action="pan-y"
           camera-orbit="-25deg 55deg 62%" field-of-view="26deg" min-camera-orbit="auto 10deg auto" max-camera-orbit="auto 82deg auto"
           auto-rotate auto-rotate-delay="2500" rotation-per-second="6deg" interaction-prompt="none" interpolation-decay="120"
-          environment-image="neutral" exposure="1.05" shadow-intensity="0.9" shadow-softness="0.8" loading="eager" reveal="auto">
+          environment-image="neutral" exposure="0.95" shadow-intensity="1" shadow-softness="0.8" loading="eager" reveal="auto">
           <button slot="ar-button" class="hp-arbtn" type="button">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z"/><path d="M4 7.4l8 4.6 8-4.6M12 12v9.2"/></svg>
             View on your desk
@@ -259,13 +264,17 @@
   var MODEL_VIEWER = 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js';
   var params = new URLSearchParams(location.search);
   var PROP = PROPERTIES[params.get('property') || 'portside'];
-  var COLOR = { leased: '#f3f1ed', space: '#a39068', spacePicked: '#8a7650', rest: '#e7dec9', roof: '#cfc09c' };
+  // Leased buildings: warm greys, alternating by floor so the floor lines read; roofs a touch darker.
+  var COLOR = { leasedA: '#cfcecb', leasedB: '#dddcd8', leasedRoof: '#b9b8b4', space: '#a39068', spacePicked: '#7f6c46', rest: '#e2d7bf', roof: '#c9b991' };
+  // The roof continues the alternating pattern as the next "floor" up, so it doesn't blend into the roads.
+  var topFloor = {};
+  function leasedColor(lv, bid) { var n = lv === 'Roof' ? (topFloor[bid] || 3) + 1 : +lv.slice(1); return n % 2 ? COLOR.leasedA : COLOR.leasedB; }
   var HOME_ORBIT = '-25deg 55deg 62%';
 
   // ---- Data adapter: WordPress (ACF) → page ---------------------------------------------------
   function loadData() {
-    if (SOURCE.combined) return fetch(SOURCE.combined).then(function (r) { return r.json(); });
-    return Promise.all([fetch(SOURCE.buildings), fetch(SOURCE.availability)])
+    if (SOURCE.combined) return fetch(SOURCE.combined, { cache: 'no-cache' }).then(function (r) { return r.json(); });
+    return Promise.all([fetch(SOURCE.buildings, { cache: 'no-cache' }), fetch(SOURCE.availability, { cache: 'no-cache' })])
       .then(function (rs) { return Promise.all(rs.map(function (r) { return r.json(); })); })
       .then(function (j) { return { buildings: j[0], availability: j[1] }; });
   }
@@ -334,7 +343,8 @@
     picked = b; pickedFloor = floor;
     if (inXR) { paint(); showXR(b, floor); return; }
     document.querySelectorAll('[data-key]').forEach(function (el) { el.setAttribute('aria-pressed', String(+el.dataset.key === b.id)); });
-    document.querySelectorAll('.hp-plan2d .is-on').forEach(function (g) { g.classList.toggle('is-picked', g === bySvgEl[b.svgId]); });
+    document.querySelectorAll('.hp-plan2d .is-on').forEach(function (g) { g.classList.toggle('is-picked', g === b.svgEl); });
+    $('view-plan').classList.toggle('has-pick', !!b.svgEl);
     renderDetail(b, floor);
     if (view === '3d' && mvLoaded) { paint(); focusModel(b); }
     if (window.matchMedia('(max-width: 899px)').matches) $('detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -344,6 +354,7 @@
     picked = null; pickedFloor = null;
     document.querySelectorAll('[data-key]').forEach(function (el) { el.setAttribute('aria-pressed', 'false'); });
     document.querySelectorAll('.hp-plan2d .is-picked').forEach(function (g) { g.classList.remove('is-picked'); });
+    $('view-plan').classList.remove('has-pick');
     $('detail').hidden = true;
     if (mvLoaded) { paint(); mv.cameraTarget = 'auto auto auto'; mv.cameraOrbit = HOME_ORBIT; }
   }
@@ -351,7 +362,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && picked && !dlg.open) clearSelection(); });
 
   // ---- Site plan (SVG): show each building's ON layer only if it has space ----------------------
-  var bySvgEl = {};
+  var byNum = {};
   function loadSitePlan() {
     return fetch(PROP.siteplan).then(function (r) { return r.text(); }).then(function (txt) {
       var holder = $('view-plan');
@@ -364,9 +375,11 @@
       $('plan-status').remove();
       // Every layer whose id ends in "ON" is a building highlight; hide the ones without space.
       svg.querySelectorAll('g[id$="ON"]').forEach(function (g) {
-        var b = bySvg[g.id];
-        if (!b || !b.total) { g.style.display = 'none'; return; }
-        bySvgEl[g.id] = g;
+        var num = (g.getAttribute('data-name') || g.id).replace(/^_/, '').replace(/ON$/i, '');
+        var b = bySvg[g.id] || byNum[num];
+        if (!b) return;                                   // no building in the data: leave the artwork as drawn
+        if (!b.total) { g.style.display = 'none'; return; } // building is fully leased: hide its highlight
+        b.svgEl = g;
         g.classList.add('is-on');
         g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
         g.setAttribute('aria-label', b.name + ', ' + fmt(b.total) + ' RSF available');
@@ -413,9 +426,10 @@
   }
   function paint() {
     if (!mv.model) return;
+    mv.model.materials.forEach(function (m) { var p = m.name.split('|'); if (p[1] && p[1].charAt(0) === 'L') topFloor[p[0]] = Math.max(topFloor[p[0]] || 0, +p[1].slice(1)); });
     mv.model.materials.forEach(function (m) {
       var parts = m.name.split('|'); if (parts.length < 2) return;
-      var b = byModel[parts[0]], lv = parts[1], c = COLOR.leased;
+      var b = byModel[parts[0]], lv = parts[1], c = leasedColor(lv, parts[0]);
       if (b && b.total) {
         var floor = lv.charAt(0) === 'L' ? +lv.slice(1) : null;
         var has = floor && b.spaces.some(function (s) { return s.floor === floor; });
@@ -571,7 +585,10 @@
     fetch(PROP.anchors).then(function (r) { return r.json(); }).catch(function () { return {}; })
   ]).then(function (r) {
     buildings = r[0]; anchors = r[1];
-    buildings.forEach(function (b) { byModel[b.modelId] = b; if (b.svgId) bySvg[b.svgId] = b; });
+    buildings.forEach(function (b) {
+      byModel[b.modelId] = b; if (b.svgId) bySvg[b.svgId] = b;
+      var m = String(b.name).match(/^\d+/); if (m) byNum[m[0]] = b;
+    });
     renderList();
     return loadSitePlan();
   }).then(function () {
@@ -580,6 +597,7 @@
   }).catch(function () {
     $('avail-title').textContent = 'Availability couldn’t load';
     $('list').innerHTML = '<li class="hp-empty">Refresh the page to try again.</li>';
+    if (!document.querySelector('#view-plan svg')) loadSitePlan(); // still show the plan as drawn
   });
 })();
 </script>
