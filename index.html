@@ -196,6 +196,10 @@
   .live .demo-frame { background: #fff; }
   @media (prefers-reduced-motion: reduce) { .ripple li, .ripple li i { transition: none; } }
 
+  /* Chat, then filter list */
+  .ui-block { display: grid; gap: 18px; scroll-margin-top: 70px; }
+  .ui-head { margin: 10px 0 0; display: flex; align-items: center; gap: 14px; font: 500 1.35rem/1.2 var(--display); }
+  .ui-head::after { content: ""; flex: 1; height: 1px; background: var(--line); }
   /* Interface tabs */
   .ui-tabs { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--cream); justify-self: start; }
   .ui-tabs button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--ink); font: 600 .92rem/1 var(--body); cursor: pointer; }
@@ -463,16 +467,34 @@
 
     <div>
       <h3>What a visitor could see</h3>
-      <p class="lede" style="font-size:1rem">Two ways to present the same search. Both read the same sample data as the property page in Step 2, so a change made there shows up here too.</p>
+      <p class="lede" style="font-size:1rem">The same search can be presented two ways: as a chat, or as a filter list. Both read the same sample data as the property page in Step 2, so a change made there shows up here too.</p>
     </div>
     <div class="sample-note is-small" role="note"><span class="bang" aria-hidden="true">!</span><p><strong style="display:inline">Sample data only.</strong> Results come from a limited sample: 4 spaces at Portside and 6 at Gateway Crossing. The finished search would cover every Healthpeak property.</p></div>
-    <div class="ui-tabs" role="tablist" aria-label="Search style">
-      <button type="button" role="tab" id="tab-filter" aria-controls="panel-filter" aria-selected="true">Filter list</button>
-      <button type="button" role="tab" id="tab-chat" aria-controls="panel-chat" aria-selected="false">Chat</button>
+    <!-- Chat -->
+    <div id="panel-chat" class="ui-block" aria-labelledby="h-chat">
+      <h4 class="ui-head" id="h-chat"><span>As a chat</span></h4>
+      <div class="chat-row">
+        <div class="chat-notes">
+          <ol>
+            <li><strong>They ask in their own words.</strong> The search pulls out size and use, shown as tags they can see.</li>
+            <li><strong>If something’s unclear, it asks.</strong> One quick choice instead of a wrong guess. Try both answers.</li>
+            <li><strong>Results come only from the data,</strong> with floor plans one tap away and a hand-off to the leasing team.</li>
+          </ol>
+        </div>
+        <div class="chat" aria-label="Simulated chat">
+          <div class="chat-top">
+            <div><strong>Find your space</strong><span>Healthpeak Bay Area · sample</span></div>
+            <button class="chat-replay" id="replay" type="button">Replay</button>
+          </div>
+          <div class="chat-log" id="log" aria-live="polite"></div>
+          <div class="chat-input" aria-hidden="true"><div>Describe the space you need…</div><span>↑</span></div>
+        </div>
+      </div>
     </div>
 
     <!-- Filter list -->
-    <div id="panel-filter" role="tabpanel" aria-labelledby="tab-filter">
+    <div id="panel-filter" class="ui-block" aria-labelledby="h-filter">
+      <h4 class="ui-head" id="h-filter"><span>As a filter list</span></h4>
       <div class="finder">
         <form class="filters" id="filters" aria-label="Filter available spaces">
           <fieldset>
@@ -532,27 +554,6 @@
           <div class="results-head"><h4 id="r-count"></h4><span>Sorted by closest size</span></div>
           <div id="r-list" class="results" aria-live="polite"></div>
           <p class="src-note">Sizes, space type, power and floor plans are from the current website. Move-in timing and lab features (vivarium, BSL-2) are placeholder values to show how the filters work.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Chat -->
-    <div id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" hidden>
-      <div class="chat-row">
-        <div class="chat-notes">
-          <ol>
-            <li><strong>They ask in their own words.</strong> The search pulls out size and use, shown as tags they can see.</li>
-            <li><strong>If something’s unclear, it asks.</strong> One quick choice instead of a wrong guess. Try both answers.</li>
-            <li><strong>Results come only from the data,</strong> with floor plans one tap away and a hand-off to the leasing team.</li>
-          </ol>
-        </div>
-        <div class="chat" aria-label="Simulated chat">
-          <div class="chat-top">
-            <div><strong>Find your space</strong><span>Healthpeak Bay Area · sample</span></div>
-            <button class="chat-replay" id="replay" type="button">Replay</button>
-          </div>
-          <div class="chat-log" id="log" aria-live="polite"></div>
-          <div class="chat-input" aria-hidden="true"><div>Describe the space you need…</div><span>↑</span></div>
         </div>
       </div>
     </div>
@@ -739,17 +740,7 @@ function setFilters(o) {
 document.getElementById('f-clear').addEventListener('click', function () { setFilters({ min: '', max: '', type: 'any', feats: [] }); });
 renderResults();
 
-// ---- Filter / Chat tabs ---------------------------------------------------------------------------
 var startChat = function () {};
-function showTab(which) {
-  ['filter', 'chat'].forEach(function (k) {
-    document.getElementById('tab-' + k).setAttribute('aria-selected', String(k === which));
-    document.getElementById('panel-' + k).hidden = k !== which;
-  });
-  if (which === 'chat') startChat(true);
-}
-document.getElementById('tab-filter').addEventListener('click', function () { showTab('filter'); });
-document.getElementById('tab-chat').addEventListener('click', function () { showTab('chat'); });
 
 // ---- Simulated chat (answers come from the same sample data) ----------------------------------------
 (function () {
@@ -781,8 +772,8 @@ document.getElementById('tab-chat').addEventListener('click', function () { show
       var m = add(html, 'bot');
       var btn = m.querySelector('.see-all');
       if (btn) btn.addEventListener('click', function () {
-        setFilters({ min: 20000, max: 30000, type: 'Lab', feats: feats }); showTab('filter');
-        document.getElementById('step-3').querySelector('.ui-tabs').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        setFilters({ min: 20000, max: 30000, type: 'Lab', feats: feats });
+        document.getElementById('panel-filter').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
       });
       later(handoff, 700);
     });
@@ -817,6 +808,11 @@ document.getElementById('tab-chat').addEventListener('click', function () { show
     }, 1700);
   }
   startChat = function () { if (!started) { started = true; run(); } };
+  // Start the conversation when the chat scrolls into view
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { startChat(); io.disconnect(); } }, { threshold: .4 });
+    io.observe(document.querySelector('.chat'));
+  } else startChat();
   document.getElementById('replay').addEventListener('click', run);
   add('Hi! Tell me what kind of space you’re looking for.', 'bot');
 })();
