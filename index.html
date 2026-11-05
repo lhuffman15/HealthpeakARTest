@@ -141,6 +141,105 @@
   .wins span { padding: 10px 16px; border-radius: 999px; background: var(--gold); color: #fff; font-weight: 700; }
   .rec .fine { color: #bdb7ad; }
   footer .wrap { padding-block: 22px 32px; font-size: .82rem; color: var(--ink-soft); }
+  /* Sample-data notice */
+  .sample-note { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: start; padding: 18px 20px; border: 2px solid #c9a24a; border-radius: 10px; background: #fff8e8; }
+  .sample-note .bang { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #c9a24a; color: #fff; font: 800 1.15rem/1 var(--body); }
+  .sample-note strong { display: block; font-size: 1.02rem; margin-bottom: 2px; }
+  .sample-note p { font-size: .95rem; color: var(--ink-soft); }
+  .sample-note.is-small { padding: 10px 14px; gap: 10px; align-items: center; border-width: 1.5px; }
+  .sample-note.is-small .bang { width: 24px; height: 24px; font-size: .9rem; }
+  .sample-note.is-small p { font-size: .86rem; }
+  .sample-band .wrap { padding-block: 26px 0; }
+
+  /* Where an update goes */
+  .flow { display: grid; gap: 10px; padding: 16px; border-radius: 8px; background: #fff; border: 1px solid #e6e0d5; }
+  .flow-title { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
+  .flow-row { display: grid; grid-template-columns: minmax(0, 150px) 26px minmax(0, 1fr); gap: 8px; align-items: center; }
+  .flow-src { padding: 9px 10px; border-radius: 6px; background: var(--ink); color: #fff; font-size: .82rem; font-weight: 700; text-align: center; line-height: 1.25; }
+  .flow-src.is-hand { background: #fff; color: var(--ink); border: 1.5px dashed #a9a59e; }
+  .flow-arrow { text-align: center; color: var(--ink-soft); font-weight: 700; }
+  .flow-outs { display: grid; gap: 6px; }
+  .flow-out { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 7px 10px; border-radius: 6px; border: 1px solid #e6e0d5; background: var(--paper); font-size: .85rem; }
+  .flow-out em { flex: none; font-style: normal; font-size: .7rem; font-weight: 700; letter-spacing: .04em; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+  .em-auto { background: #e5efe7; color: var(--plus); }
+  .em-hand { background: #f6e7e4; color: var(--minus); }
+  @media (max-width: 520px) { .flow-row { grid-template-columns: 1fr; } .flow-arrow { transform: rotate(90deg); } }
+
+  /* Live "change one entry" demo */
+  .live { display: grid; gap: 18px; padding: 26px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+  .live-top { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 900px) { .live-top { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); } }
+  .wp-card { border: 1px solid #c3c4c7; border-radius: 4px; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.06); font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wp-card header { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #dcdcde; background: #f6f7f7; font-size: .82rem; color: #50575e; }
+  .wp-card header b { color: #1d2327; font-weight: 600; }
+  .wp-body { display: grid; gap: 12px; padding: 14px; }
+  .wp-field { display: grid; gap: 5px; }
+  .wp-field label, .wp-field .lbl { font-size: .8rem; font-weight: 600; color: #1d2327; }
+  .wp-field select { width: 100%; padding: 8px 10px; border: 1px solid #8c8f94; border-radius: 4px; background: #fff; font: inherit; font-size: .9rem; color: #1d2327; }
+  .seg { justify-self: start; display: inline-flex; border: 1px solid #8c8f94; border-radius: 4px; overflow: hidden; }
+  .seg button { padding: 8px 16px; border: 0; background: #fff; color: #1d2327; font: 600 .86rem/1 inherit; font-family: inherit; cursor: pointer; }
+  .seg button + button { border-left: 1px solid #8c8f94; }
+  .seg button[aria-pressed="true"] { background: #2271b1; color: #fff; }
+  .wp-actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
+  .wp-update { padding: 9px 16px; border: 0; border-radius: 4px; background: #2271b1; color: #fff; font: 600 .88rem/1 inherit; font-family: inherit; cursor: pointer; }
+  .wp-reset { padding: 0; border: 0; background: none; color: #2271b1; font: .82rem/1 inherit; font-family: inherit; text-decoration: underline; cursor: pointer; }
+  .wp-update:focus-visible, .wp-reset:focus-visible, .seg button:focus-visible, .wp-field select:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .ripple { display: grid; gap: 8px; align-content: start; }
+  .ripple h4 { margin: 0; font: 500 1.1rem/1.2 var(--display); }
+  .ripple ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .ripple li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font-size: .9rem; transition: background .4s ease, border-color .4s ease; }
+  .ripple li i { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #e7e4de; color: var(--ink-soft); font-style: normal; font-size: .78rem; font-weight: 700; transition: background .4s ease, color .4s ease; }
+  .ripple li span small { display: block; color: var(--ink-soft); font-size: .8rem; }
+  .ripple li.is-done { border-color: #a9c8b1; background: #f1f7f2; }
+  .ripple li.is-done i { background: var(--plus); color: #fff; }
+  .ripple .status { font-size: .86rem; color: var(--ink-soft); min-height: 1.3em; }
+  .live .demo-frame { background: #fff; }
+  @media (prefers-reduced-motion: reduce) { .ripple li, .ripple li i { transition: none; } }
+
+  /* Interface tabs */
+  .ui-tabs { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--cream); justify-self: start; }
+  .ui-tabs button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--ink); font: 600 .92rem/1 var(--body); cursor: pointer; }
+  .ui-tabs button[aria-selected="true"] { background: var(--ink); color: #fff; }
+  .ui-tabs button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+  /* Filter list */
+  .finder { display: grid; gap: 22px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 900px) { .finder { grid-template-columns: 300px minmax(0, 1fr); } }
+  .filters { display: grid; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+  .filters fieldset { margin: 0; padding: 0; border: 0; display: grid; gap: 8px; min-width: 0; }
+  .filters legend, .filters .lbl { padding: 0; margin-bottom: 6px; font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .range { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; }
+  .range span { color: var(--ink-soft); font-size: .85rem; }
+  .filters input[type="number"], .filters select { width: 100%; min-width: 0; padding: 9px 10px; border: 1px solid #cfc8bb; border-radius: 6px; background: #fff; font: inherit; font-size: .92rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pills button { padding: 7px 12px; border: 1px solid #cfc8bb; border-radius: 999px; background: #fff; color: var(--ink); font: 600 .84rem/1 var(--body); cursor: pointer; }
+  .pills button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .checks { display: grid; gap: 7px; }
+  .checks label { display: flex; gap: 9px; align-items: center; font-size: .92rem; cursor: pointer; }
+  .checks input { width: 17px; height: 17px; accent-color: var(--gold-deep); }
+  .filters input:focus-visible, .filters select:focus-visible, .pills button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .filters .clear { justify-self: start; padding: 0; border: 0; background: none; color: var(--gold-deep); font: 600 .86rem/1 var(--body); text-decoration: underline; cursor: pointer; }
+  .results { display: grid; gap: 12px; min-width: 0; }
+  .results-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; }
+  .results-head h4 { margin: 0; font: 500 1.3rem/1.2 var(--display); }
+  .results-head span { font-size: .86rem; color: var(--ink-soft); }
+  .space { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 16px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  .space h5 { margin: 0; font: 600 1rem/1.3 var(--body); }
+  .space .where { font-size: .82rem; color: var(--ink-soft); }
+  .space .size { grid-row: span 2; text-align: right; font: 500 1.35rem/1.1 var(--display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .space .size small { display: block; font: 600 .7rem/1.4 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+  .space .meta { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .tagx { padding: 3px 9px; border-radius: 999px; background: #efede8; color: var(--ink); font-size: .76rem; font-weight: 600; }
+  .tagx.type-lab { background: #e6eef0; }
+  .tagx.feat { background: var(--gold-wash); color: var(--gold-deep); }
+  .space .links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 16px; padding-top: 6px; border-top: 1px solid #efebe4; font-size: .84rem; }
+  .space .links a { color: var(--gold-deep); font-weight: 700; text-decoration: none; }
+  .space .links a:hover { text-decoration: underline; }
+  .space .links .muted { color: var(--ink-soft); }
+  .no-match { padding: 26px; border: 1px dashed var(--line); border-radius: 10px; text-align: center; color: var(--ink-soft); }
+  .src-note { font-size: .8rem; color: var(--ink-soft); }
+  .see-all { margin-top: 8px; padding: 7px 12px; border: 1px solid var(--gold); border-radius: 999px; background: #fff; color: var(--gold-deep); font: 700 .8rem/1 var(--body); cursor: pointer; }
+
 </style>
 </head>
 <body>
@@ -149,7 +248,7 @@
   <div class="wrap">
     <p class="eyebrow">Healthpeak Bay Area · Availability search</p>
     <h1>Helping prospects find their space</h1>
-    <p class="lede">Options for a chat-style space search on healthpeakbayarea.com, and the availability data that powers it.</p>
+    <p class="lede">Options for a space search on healthpeakbayarea.com, as a chat or a filter list, and the availability data that powers it.</p>
   </div>
 </header>
 
@@ -159,20 +258,23 @@
       <li><a href="#options">Options at a glance</a></li>
       <li><a href="#step-1">1 · Clean data</a></li>
       <li><a href="#step-2">2 · Using the data</a></li>
-      <li><a href="#step-3">3 · Powering the chat</a></li>
+      <li><a href="#step-3">3 · Powering the search</a></li>
       <li><a href="#recommendation">Recommendation</a></li>
     </ol>
   </div>
 </nav>
 
 <main>
+<div class="sample-band"><div class="wrap">
+  <div class="sample-note" role="note"><span class="bang" aria-hidden="true">!</span><div><strong>Sample data only</strong><p>The demos on this page work from a limited sample: 4 spaces at Portside and 6 at Gateway Crossing, taken from the current website. They show how the tools would work, not the full inventory. The finished tool would cover every Healthpeak property and space.</p></div></div>
+</div></div>
 <!-- Options table -->
 <section id="options">
   <div class="wrap">
     <div>
       <p class="eyebrow">Options at a glance</p>
-      <h2>Three ways to build the chat search</h2>
-      <p class="lede">The goal: a chat button in the lower right that helps prospects find a matching lab space, using dropdowns or plain-language requests, with optional email capture.</p>
+      <h2>Three ways to build the search</h2>
+      <p class="lede">The goal: help prospects find a matching space on the site, through a chat, a filter list or both, with optional email capture.</p>
     </div>
     <div class="table-scroll">
       <table class="compare">
@@ -228,40 +330,99 @@
     <div class="step-head">
       <span class="step-num" aria-hidden="true">2</span>
       <h2>How do we use this data?</h2>
-      <p class="lede">Where the data lives decides how much upkeep the site needs every time a space changes.</p>
+      <p class="lede">The key difference is what happens when a space changes. Who has to update what, and where?</p>
     </div>
     <div class="options">
       <article class="option">
         <span class="tag">Option A</span>
         <h3>Upload the spreadsheet</h3>
         <p>The spreadsheet is uploaded to WordPress and re-uploaded as availability changes. Property pages are still updated by hand, as today.</p>
+        <div class="flow" aria-label="Option A: where an update goes">
+          <span class="flow-title">When a space leases</span>
+          <div class="flow-row">
+            <span class="flow-src">Edit &amp; re-upload spreadsheet</span><span class="flow-arrow" aria-hidden="true">→</span>
+            <div class="flow-outs"><span class="flow-out">Chat search <em class="em-auto">Updates</em></span></div>
+          </div>
+          <div class="flow-row">
+            <span class="flow-src is-hand">Also edit each property page</span><span class="flow-arrow" aria-hidden="true">→</span>
+            <div class="flow-outs">
+              <span class="flow-out">Availability table <em class="em-hand">By hand</em></span>
+              <span class="flow-out">Site plan / stacking plan <em class="em-hand">By hand</em></span>
+            </div>
+          </div>
+        </div>
         <ul class="pc">
           <li class="plus">Fastest to launch</li>
           <li class="minus">Double the work to maintain: every change is made in the spreadsheet and on the property page</li>
           <li class="minus">The chat and the property pages can disagree when one gets missed</li>
         </ul>
       </article>
-      <article class="option is-b">
+      <article class="option">
         <span class="tag">Option B</span>
         <h3>Enter each space once in WordPress</h3>
-        <p>A space is entered once in a WordPress form, with RSF, features, floor plan image and PDF. It then appears everywhere automatically: the chat search, the property-page table, the site plan highlight and the floor plan popup.</p>
+        <p>A space is entered once in a WordPress form, with RSF, features, floor plan image and PDF. The site reads that one entry everywhere it’s shown.</p>
+        <div class="flow" aria-label="Option B: where an update goes">
+          <span class="flow-title">When a space leases</span>
+          <div class="flow-row">
+            <span class="flow-src">Change one entry in WordPress</span><span class="flow-arrow" aria-hidden="true">→</span>
+            <div class="flow-outs">
+              <span class="flow-out">Chat or filter search <em class="em-auto">Updates</em></span>
+              <span class="flow-out">Availability table <em class="em-auto">Updates</em></span>
+              <span class="flow-out">Site plan highlight <em class="em-auto">Updates</em></span>
+              <span class="flow-out">Floor plan popup <em class="em-auto">Updates</em></span>
+            </div>
+          </div>
+        </div>
         <ul class="pc">
           <li class="minus">Takes time to build at the start</li>
           <li class="plus">Easy to update and maintain once built</li>
-          <li class="plus">Better experience for visitors and better chat results</li>
+          <li class="plus">Better experience for visitors and better search results</li>
         </ul>
       </article>
     </div>
 
-    <div class="demo">
-      <div class="demo-head">
-        <h3>Example of Option B: a Portside property page</h3>
-        <a href="embed.html?property=portside&amp;views=2d" target="_blank" rel="noopener">Open full screen ↗</a>
+    <div class="live" id="try">
+      <div>
+        <p class="eyebrow">Try it · Option B</p>
+        <h3>Change one entry, watch everything update</h3>
+        <p class="lede" style="font-size:1rem">Mark a space as leased the way a broker would in WordPress. The property page below and the search in Step 3 both update from that single change. Nobody edits the page by hand.</p>
       </div>
-      <p class="fine">Working prototype with sample data. Click a gold building, then a floor, to open its floor plan. Gold buildings come straight from the data.</p>
+      <div class="sample-note is-small" role="note"><span class="bang" aria-hidden="true">!</span><p><strong style="display:inline">Sample data only.</strong> A limited sample of spaces from Portside and Gateway Crossing. Changes here are just for this demo and reset when the page reloads.</p></div>
+      <div class="live-top">
+        <div class="wp-card">
+          <header><b>Edit Availability</b><span>WordPress · sample</span></header>
+          <div class="wp-body">
+            <div class="wp-field">
+              <label for="wp-space">Space</label>
+              <select id="wp-space"></select>
+            </div>
+            <div class="wp-field">
+              <span class="lbl" id="wp-status-lbl">Status</span>
+              <div class="seg" role="group" aria-labelledby="wp-status-lbl">
+                <button type="button" id="wp-avail" aria-pressed="true">Available</button>
+                <button type="button" id="wp-leased" aria-pressed="false">Leased</button>
+              </div>
+            </div>
+            <div class="wp-actions">
+              <button type="button" class="wp-update" id="wp-update">Update</button>
+              <button type="button" class="wp-reset" id="wp-reset">Reset sample data</button>
+            </div>
+          </div>
+        </div>
+        <div class="ripple" aria-live="polite">
+          <h4>Where that one change shows up</h4>
+          <ul>
+            <li id="rp-table"><i aria-hidden="true">1</i><span>Property-page availability list<small>Building totals and floors recalculate</small></span></li>
+            <li id="rp-plan"><i aria-hidden="true">2</i><span>Site plan highlight<small>A building with no space left turns off</small></span></li>
+            <li id="rp-search"><i aria-hidden="true">3</i><span>Filter list and chat results<small>See Step 3. The space appears or drops out</small></span></li>
+          </ul>
+          <p class="status" id="rp-status">Pick a space, set its status, then press Update.</p>
+        </div>
+      </div>
       <div class="demo-frame">
         <iframe id="hp-portside" src="embed.html?property=portside&amp;views=2d" title="Portside availability prototype: site plan and floor plans" loading="lazy"></iframe>
       </div>
+      <p class="fine">Above: the Portside property-page embed. Gateway Crossing would get its own site plan the same way. <a href="embed.html?property=portside&amp;views=2d" target="_blank" rel="noopener" style="color:var(--gold-deep)">Open full screen ↗</a></p>
     </div>
   </div>
 </section>
@@ -271,14 +432,14 @@
   <div class="wrap">
     <div class="step-head">
       <span class="step-num" aria-hidden="true">3</span>
-      <h2>What powers the chat?</h2>
-      <p class="lede">Both options give visitors the same chat button. The difference is how the request is understood, and what it searches.</p>
+      <h2>What powers the search?</h2>
+      <p class="lede">The difference is how a request is understood, and what it searches.</p>
     </div>
     <div class="options">
       <article class="option">
         <span class="tag">Option A</span>
         <h3>AI chatbot plugin</h3>
-        <p>AI Engine Pro or WPBot Pro, set up to search our availability data.</p>
+        <p>AI Engine Pro or WPBot Pro, set up to search our availability data. Built around a chat window.</p>
         <ul class="pc">
           <li class="plus">Understands open-ended, conversational requests</li>
           <li class="plus">Plugin updates maintained by the vendor</li>
@@ -287,10 +448,10 @@
           <li class="minus">Needs CBRE approval of the AI vendor and a spending cap</li>
         </ul>
       </article>
-      <article class="option is-b">
+      <article class="option">
         <span class="tag">Option B</span>
         <h3>Custom build</h3>
-        <p>Custom code running on WordPress, reading the same data as the property pages.</p>
+        <p>Custom code running on WordPress, reading the same data as the property pages. Can be a chat, a filter list, or both.</p>
         <ul class="pc">
           <li class="plus">Searches the same data that updates the property pages, so results always match</li>
           <li class="mixed">Reads key words and answers only from the data: always factual, but less conversational</li>
@@ -300,23 +461,99 @@
       </article>
     </div>
 
-    <div class="chat-row">
-      <div class="chat-notes">
-        <h3>What a visitor would see</h3>
-        <p class="fine">A simulated chat using the sample Portside data. Either option can work this way.</p>
-        <ol>
-          <li><strong>They ask in their own words.</strong> The search pulls out size, use and timing, shown as tags they can see.</li>
-          <li><strong>If something’s unclear, it asks.</strong> One quick choice instead of a wrong guess. Try both answers.</li>
-          <li><strong>Results come only from the data,</strong> with the floor plan one tap away and a hand-off to the leasing team.</li>
-        </ol>
-      </div>
-      <div class="chat" aria-label="Simulated chat">
-        <div class="chat-top">
-          <div><strong>Find your space</strong><span>Healthpeak Bay Area</span></div>
-          <button class="chat-replay" id="replay" type="button">Replay</button>
+    <div>
+      <h3>What a visitor could see</h3>
+      <p class="lede" style="font-size:1rem">Two ways to present the same search. Both read the same sample data as the property page in Step 2, so a change made there shows up here too.</p>
+    </div>
+    <div class="sample-note is-small" role="note"><span class="bang" aria-hidden="true">!</span><p><strong style="display:inline">Sample data only.</strong> Results come from a limited sample: 4 spaces at Portside and 6 at Gateway Crossing. The finished search would cover every Healthpeak property.</p></div>
+    <div class="ui-tabs" role="tablist" aria-label="Search style">
+      <button type="button" role="tab" id="tab-filter" aria-controls="panel-filter" aria-selected="true">Filter list</button>
+      <button type="button" role="tab" id="tab-chat" aria-controls="panel-chat" aria-selected="false">Chat</button>
+    </div>
+
+    <!-- Filter list -->
+    <div id="panel-filter" role="tabpanel" aria-labelledby="tab-filter">
+      <div class="finder">
+        <form class="filters" id="filters" aria-label="Filter available spaces">
+          <fieldset>
+            <legend>Size (RSF)</legend>
+            <div class="range">
+              <input type="number" id="f-min" inputmode="numeric" step="1000" min="0" value="20000" aria-label="Minimum RSF">
+              <span>to</span>
+              <input type="number" id="f-max" inputmode="numeric" step="1000" min="0" value="30000" aria-label="Maximum RSF">
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Space type</legend>
+            <div class="pills" id="f-type">
+              <button type="button" data-v="any" aria-pressed="true">Any</button>
+              <button type="button" data-v="Lab" aria-pressed="false">Lab</button>
+              <button type="button" data-v="Office" aria-pressed="false">Office</button>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>Available by</legend>
+            <select id="f-date" aria-label="Available by">
+              <option value="99">Any time</option>
+              <option value="0">Now</option>
+              <option value="1">Q2 2027</option>
+              <option value="2">Q4 2027</option>
+            </select>
+          </fieldset>
+          <fieldset>
+            <legend>Property</legend>
+            <select id="f-prop" aria-label="Property">
+              <option value="any">All properties</option>
+              <option value="Portside">Portside</option>
+              <option value="Gateway Crossing">Gateway Crossing</option>
+            </select>
+          </fieldset>
+          <fieldset>
+            <legend>Minimum power</legend>
+            <select id="f-power" aria-label="Minimum power">
+              <option value="0">Any</option>
+              <option value="2000">2,000 amps +</option>
+              <option value="3000">3,000 amps +</option>
+              <option value="4000">4,000 amps +</option>
+            </select>
+          </fieldset>
+          <fieldset>
+            <legend>Features</legend>
+            <div class="checks">
+              <label><input type="checkbox" value="Spec suite"> Spec suite (move-in ready)</label>
+              <label><input type="checkbox" value="Full floor"> Full floor</label>
+              <label><input type="checkbox" value="Vivarium"> Vivarium</label>
+              <label><input type="checkbox" value="BSL-2"> BSL-2 lab</label>
+            </div>
+          </fieldset>
+          <button type="button" class="clear" id="f-clear">Clear filters</button>
+        </form>
+        <div class="results">
+          <div class="results-head"><h4 id="r-count"></h4><span>Sorted by closest size</span></div>
+          <div id="r-list" class="results" aria-live="polite"></div>
+          <p class="src-note">Sizes, space type, power and floor plans are from the current website. Move-in timing and lab features (vivarium, BSL-2) are placeholder values to show how the filters work.</p>
         </div>
-        <div class="chat-log" id="log" aria-live="polite"></div>
-        <div class="chat-input" aria-hidden="true"><div>Describe the space you need…</div><span>↑</span></div>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div id="panel-chat" role="tabpanel" aria-labelledby="tab-chat" hidden>
+      <div class="chat-row">
+        <div class="chat-notes">
+          <ol>
+            <li><strong>They ask in their own words.</strong> The search pulls out size and use, shown as tags they can see.</li>
+            <li><strong>If something’s unclear, it asks.</strong> One quick choice instead of a wrong guess. Try both answers.</li>
+            <li><strong>Results come only from the data,</strong> with floor plans one tap away and a hand-off to the leasing team.</li>
+          </ol>
+        </div>
+        <div class="chat" aria-label="Simulated chat">
+          <div class="chat-top">
+            <div><strong>Find your space</strong><span>Healthpeak Bay Area · sample</span></div>
+            <button class="chat-replay" id="replay" type="button">Replay</button>
+          </div>
+          <div class="chat-log" id="log" aria-live="polite"></div>
+          <div class="chat-input" aria-hidden="true"><div>Describe the space you need…</div><span>↑</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -356,11 +593,169 @@
 <footer><div class="wrap">Prepared by CBRE for Healthpeak · Prototype uses sample data · <a href="property-demo.html" style="color:inherit">Full property page demo</a></div></footer>
 
 <script>
-// ---- Simulated chat --------------------------------------------------------------------------
+// =================================================================================================
+// One shared SAMPLE data set drives every demo on this page: the "Try it" form, the Portside embed,
+// the filter list and the chat. Sizes, type, power and PDFs are from healthpeakbayarea.com;
+// move-in timing ("when") and lab features are placeholders for the demo.
+// =================================================================================================
+var WHEN = ['Now', 'Q2 2027', 'Q4 2027'];
+var SAMPLE = [
+  { id: 'ps-1140-1', prop: 'Portside', bld: '1140 Veterans Blvd', bid: 1140, floor: 1, rsf: 21682, type: 'Lab', cond: 'Spec suite', feats: ['Spec suite'], amps: 0, power: 'Not listed', when: 0,
+    pdf: 'https://f.tlcollect.com/fr2/325/54769/Portside_1140_Veterans_1st_Floor_Spec_Suite_%284%29.pdf?cbcachex=580262' },
+  { id: 'ps-1140-2', prop: 'Portside', bld: '1140 Veterans Blvd', bid: 1140, floor: 2, rsf: 27155, type: 'Lab', cond: 'Hypothetical plan', feats: ['Vivarium'], amps: 0, power: 'Not listed', when: 1,
+    pdf: 'https://f.tlcollect.com/fr2/225/74226/Portside_1140_Veterans_2nd_Floor_Hypothetical_%281%29.pdf?cbcachex=292354' },
+  { id: 'ps-1140-3', prop: 'Portside', bld: '1140 Veterans Blvd', bid: 1140, floor: 3, rsf: 26953, type: 'Lab', cond: 'Hypothetical plan', feats: ['BSL-2'], amps: 0, power: 'Not listed', when: 1,
+    pdf: 'https://f.tlcollect.com/fr2/025/58756/Portside_1140_Veterans_3rd_Floor_Hypothetical_%281%29.pdf?cbcachex=151685' },
+  { id: 'ps-331-2', prop: 'Portside', bld: '331 Oyster Point Blvd', bid: 331, floor: 2, rsf: 33333, type: 'Lab', cond: 'Shell', feats: ['Vivarium', 'BSL-2'], amps: 0, power: 'Not listed', when: 2,
+    pdf: 'https://f.tlcollect.com/fr2/525/56232/Portside_331_Oyster_Point_2nd_Floor_Shell_%281%29.pdf?cbcachex=869652' },
+  { id: 'gc-651-5', prop: 'Gateway Crossing', bld: '651 Gateway Blvd', floor: 5, rsf: 22654, type: 'Lab', cond: 'Spec suite · two suites', feats: ['Spec suite', 'BSL-2'], amps: 8000, power: '2 × 4,000A base, 2 × 5,000A tenant', when: 0,
+    pdf: 'https://healthpeakbayarea.com/wp-content/uploads/2026/10/651-Gateway-Blvd_5th-Floor-Spec-Suite_two-tenants.pdf' },
+  { id: 'gc-651-9', prop: 'Gateway Crossing', bld: '651 Gateway Blvd', floor: 9, rsf: 21905, type: 'Lab', cond: 'Spec suite', feats: ['Spec suite', 'Vivarium'], amps: 8000, power: '2 × 4,000A base, 2 × 5,000A tenant', when: 0,
+    pdf: 'https://healthpeakbayarea.com/wp-content/uploads/2026/05/651-Gateway-Blvd_9th-Floor-Spec-Suite-1.pdf' },
+  { id: 'gc-201-2', prop: 'Gateway Crossing', bld: '201 Gateway Blvd', floor: 2, rsf: 26553, type: 'Lab', cond: '', feats: [], amps: 2000, power: '2,000A', when: 1,
+    pdf: 'https://healthpeakbayarea.com/wp-content/uploads/2025/10/201-Gateway_Second-Floor.pdf' },
+  { id: 'gc-2cd-2', prop: 'Gateway Crossing', bld: '2 Corporate Dr', floor: 2, rsf: 45912, type: 'Lab', cond: '', feats: ['Vivarium'], amps: 3000, power: '3,000A', when: 2,
+    pdf: 'https://healthpeakbayarea.com/wp-content/uploads/2025/08/2-Corporate-Dr_Second-Floor.pdf' },
+  { id: 'gc-701-2', prop: 'Gateway Crossing', bld: '701 Gateway Blvd', floor: 2, rsf: 26468, type: 'Office', cond: 'Three suites', feats: [], amps: 3000, power: '3,000A', when: 0,
+    pdf: 'https://healthpeakbayarea.com/wp-content/uploads/2026/08/701-Gateway_2nd-Floor-1.pdf' },
+  { id: 'gc-611-6', prop: 'Gateway Crossing', bld: '611 Gateway Blvd', floor: 6, rsf: 24768, type: 'Office', cond: 'Full floor opportunity', feats: ['Full floor'], amps: 3000, power: '2,500A base, 3,000A tenant', when: 0,
+    pdf: 'https://healthpeakbayarea.com/wp-content/uploads/2026/08/611-Gateway_6th-Floor.pdf' }
+];
+SAMPLE.forEach(function (s) { s.status = 'Available'; });
+
+var fmt = function (n) { return '±' + n.toLocaleString('en-US'); };
+var ordinal = function (n) { var s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+var esc = function (t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; };
+function available() { return SAMPLE.filter(function (s) { return s.status === 'Available'; }); }
+function label(s) { return s.bld + ' · ' + ordinal(s.floor) + ' floor'; }
+
+// ---- Send the Portside part to the property-page embed, in the WordPress REST shape -------------
+var PORTSIDE_BUILDINGS = [1100, 1120, 1130, 1140, 1150, 1170, 1180, 329, 331, 333].map(function (n) {
+  var name = n < 1000 ? n + ' Oyster Point Blvd' : n + ' Veterans Blvd';
+  var model = n < 1000 ? n + ' Oyster Point' : n + ' Veterans';
+  return { id: n, title: { rendered: name }, acf: { model_id: model, svg_layer_id: '_' + n + 'ON', property: 'Portside' } };
+});
+function sendToEmbed() {
+  var frame = document.getElementById('hp-portside');
+  if (!frame || !frame.contentWindow) return;
+  var availability = available().filter(function (s) { return s.prop === 'Portside'; }).map(function (s, i) {
+    return { id: 9000 + i, acf: { building: s.bid, floor: s.floor, suite: ordinal(s.floor) + ' Floor', rsf: s.rsf, status: 'Available', plan_type: s.cond, floor_plan_pdf: s.pdf, floor_plan_image: '' } };
+  });
+  frame.contentWindow.postMessage({ type: 'hp-data', data: { buildings: PORTSIDE_BUILDINGS, availability: availability } }, location.origin);
+}
+window.addEventListener('message', function (e) {
+  if (e.origin !== location.origin || !e.data) return;
+  if (e.data.type === 'hp-embed-height') document.getElementById('hp-portside').style.height = e.data.height + 'px';
+  if (e.data.type === 'hp-embed-ready') sendToEmbed();
+});
+
+// ---- "Try it": one WordPress-style edit ---------------------------------------------------------
+(function () {
+  var sel = document.getElementById('wp-space'), btnA = document.getElementById('wp-avail'), btnL = document.getElementById('wp-leased');
+  var status = document.getElementById('rp-status'), steps = ['rp-table', 'rp-plan', 'rp-search'].map(function (id) { return document.getElementById(id); });
+  var pending = 'Available', timers = [];
+  SAMPLE.forEach(function (s) { var o = document.createElement('option'); o.value = s.id; o.textContent = s.prop + ' · ' + label(s) + ' (' + fmt(s.rsf) + ' RSF)'; sel.appendChild(o); });
+  sel.value = 'ps-331-2';
+  function current() { return SAMPLE.filter(function (s) { return s.id === sel.value; })[0]; }
+  function setPending(v) { pending = v; btnA.setAttribute('aria-pressed', String(v === 'Available')); btnL.setAttribute('aria-pressed', String(v === 'Leased')); }
+  function reflect() { setPending(current().status); }
+  sel.addEventListener('change', reflect);
+  btnA.addEventListener('click', function () { setPending('Available'); });
+  btnL.addEventListener('click', function () { setPending('Leased'); });
+  function ripple(msg) {
+    timers.forEach(clearTimeout); timers = [];
+    steps.forEach(function (li) { li.classList.remove('is-done'); li.querySelector('i').textContent = li.id === 'rp-table' ? '1' : li.id === 'rp-plan' ? '2' : '3'; });
+    steps.forEach(function (li, i) { timers.push(setTimeout(function () { li.classList.add('is-done'); li.querySelector('i').textContent = '✓'; }, 200 + i * 260)); });
+    status.textContent = msg;
+  }
+  document.getElementById('wp-update').addEventListener('click', function () {
+    var s = current(); s.status = pending;
+    sendToEmbed(); renderResults();
+    var where = s.prop === 'Portside' ? 'Look at the site plan and list below.' : 'Gateway Crossing’s own page would update the same way; its search results changed in Step 3.';
+    ripple('Saved: ' + label(s) + ' is now ' + pending.toLowerCase() + '. One change, every place updated. ' + where);
+  });
+  document.getElementById('wp-reset').addEventListener('click', function () {
+    SAMPLE.forEach(function (s) { s.status = 'Available'; }); reflect(); sendToEmbed(); renderResults();
+    steps.forEach(function (li, i) { li.classList.remove('is-done'); li.querySelector('i').textContent = String(i + 1); });
+    status.textContent = 'Sample data reset. Every space is available again.';
+  });
+})();
+
+// ---- Filter list ----------------------------------------------------------------------------------
+var F = { min: document.getElementById('f-min'), max: document.getElementById('f-max'), date: document.getElementById('f-date'),
+          prop: document.getElementById('f-prop'), power: document.getElementById('f-power'), type: 'any' };
+function readFilters() {
+  return {
+    min: +F.min.value || 0, max: +F.max.value || Infinity, type: F.type, date: +F.date.value, prop: F.prop.value, power: +F.power.value,
+    feats: Array.prototype.map.call(document.querySelectorAll('#filters .checks input:checked'), function (c) { return c.value; })
+  };
+}
+function match(f) {
+  var mid = isFinite(f.max) ? (f.min + f.max) / 2 : f.min;
+  return available().filter(function (s) {
+    return s.rsf >= f.min && s.rsf <= f.max &&
+      (f.type === 'any' || s.type === f.type) &&
+      s.when <= f.date &&
+      (f.prop === 'any' || s.prop === f.prop) &&
+      (!f.power || s.amps >= f.power) &&
+      f.feats.every(function (x) { return s.feats.indexOf(x) > -1; });
+  }).sort(function (a, b) { return Math.abs(a.rsf - mid) - Math.abs(b.rsf - mid); });
+}
+function card(s) {
+  var tags = '<span class="tagx' + (s.type === 'Lab' ? ' type-lab' : '') + '">' + s.type + '</span>' +
+    (s.cond ? '<span class="tagx">' + esc(s.cond) + '</span>' : '') +
+    s.feats.filter(function (x) { return !(x === 'Spec suite' && /Spec suite/.test(s.cond)) && !(x === 'Full floor' && /Full floor/.test(s.cond)); })
+      .map(function (x) { return '<span class="tagx feat">' + esc(x) + '</span>'; }).join('') +
+    '<span class="tagx">Available ' + (s.when ? WHEN[s.when] : 'now') + '</span>';
+  return '<article class="space">' +
+    '<div><h5>' + esc(label(s)) + '</h5><div class="where">' + esc(s.prop) + ' · Power: ' + esc(s.power) + '</div></div>' +
+    '<div class="size">' + fmt(s.rsf) + '<small>RSF</small></div>' +
+    '<div class="meta">' + tags + '</div>' +
+    '<div class="links"><a href="' + s.pdf + '" target="_blank" rel="noopener">Floor plan PDF ↗</a><span class="muted">Contact the leasing team</span></div>' +
+  '</article>';
+}
+function renderResults() {
+  var list = match(readFilters()), out = document.getElementById('r-list');
+  document.getElementById('r-count').textContent = list.length + (list.length === 1 ? ' space matches' : ' spaces match');
+  out.innerHTML = list.length ? list.map(card).join('') :
+    '<div class="no-match">No spaces match all of these. Try widening the size range or removing a feature.</div>';
+}
+document.getElementById('filters').addEventListener('input', renderResults);
+document.getElementById('filters').addEventListener('submit', function (e) { e.preventDefault(); });
+document.querySelectorAll('#f-type button').forEach(function (b) {
+  b.addEventListener('click', function () {
+    F.type = b.dataset.v;
+    document.querySelectorAll('#f-type button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    renderResults();
+  });
+});
+function setFilters(o) {
+  F.min.value = o.min; F.max.value = o.max; F.date.value = '99'; F.prop.value = 'any'; F.power.value = '0';
+  F.type = o.type || 'any';
+  document.querySelectorAll('#f-type button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.v === F.type)); });
+  document.querySelectorAll('#filters .checks input').forEach(function (c) { c.checked = (o.feats || []).indexOf(c.value) > -1; });
+  renderResults();
+}
+document.getElementById('f-clear').addEventListener('click', function () { setFilters({ min: '', max: '', type: 'any', feats: [] }); });
+renderResults();
+
+// ---- Filter / Chat tabs ---------------------------------------------------------------------------
+var startChat = function () {};
+function showTab(which) {
+  ['filter', 'chat'].forEach(function (k) {
+    document.getElementById('tab-' + k).setAttribute('aria-selected', String(k === which));
+    document.getElementById('panel-' + k).hidden = k !== which;
+  });
+  if (which === 'chat') startChat(true);
+}
+document.getElementById('tab-filter').addEventListener('click', function () { showTab('filter'); });
+document.getElementById('tab-chat').addEventListener('click', function () { showTab('chat'); });
+
+// ---- Simulated chat (answers come from the same sample data) ----------------------------------------
 (function () {
   var log = document.getElementById('log');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var timers = [];
+  var timers = [], started = false;
   function later(fn, ms) { timers.push(setTimeout(fn, reduce ? 0 : ms)); }
   function scroll() { log.scrollTop = log.scrollHeight; }
   function add(html, who) { var d = document.createElement('div'); d.className = 'msg ' + who; d.innerHTML = html; log.appendChild(d); scroll(); return d; }
@@ -368,40 +763,40 @@
     var t = document.createElement('div'); t.className = 'typing'; t.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(t); scroll();
     later(function () { t.remove(); then(); }, ms);
   }
-  function result(name, line, plan) {
-    return '<div class="result"><b>' + name + '</b><span>' + line + '</span><a href="embed.html?property=portside&views=2d" target="_blank" rel="noopener">View floor plan ↗</a></div>';
+  function result(s) {
+    return '<div class="result"><b>' + esc(label(s)) + '</b><span>' + esc(s.prop) + ' · ' + fmt(s.rsf) + ' RSF' + (s.cond ? ' · ' + esc(s.cond) : '') + '</span>' +
+      '<a href="' + s.pdf + '" target="_blank" rel="noopener">Floor plan PDF ↗</a></div>';
   }
-  var ANSWERS = {
-    ready: function () {
-      add('Move-in ready', 'user');
-      typing(900, function () {
-        add('Here’s the best match at Portside:' +
-          result('1140 Veterans Blvd · 1st floor', '±21,682 RSF · Spec suite, move-in ready') +
-          '<div class="chips"><span class="chip">Lab</span><span class="chip">20–30k RSF</span><span class="chip">Move-in ready</span></div>', 'bot');
-        later(handoff, 700);
+  function answer(ready) {
+    var feats = ready ? ['Spec suite'] : [];
+    var all = match({ min: 20000, max: 30000, type: 'Lab', date: 99, prop: 'any', power: 0, feats: feats });
+    add(ready ? 'Move-in ready' : 'Either is fine', 'user');
+    typing(900, function () {
+      if (!all.length) { add('Nothing in that range is available right now. Want me to widen the size range, or connect you with the leasing team?', 'bot'); later(handoff, 600); return; }
+      var top = all.slice(0, 3), more = all.length - top.length;
+      var html = (all.length === 1 ? 'I found 1 lab space' : 'I found ' + all.length + ' lab spaces') + ' between 20,000 and 30,000 RSF' + (ready ? ' that are move-in ready' : '') + '. The closest to 25,000:' +
+        top.map(result).join('') +
+        '<div class="chips"><span class="chip">Lab</span><span class="chip">20–30k RSF</span>' + (ready ? '<span class="chip">Move-in ready</span>' : '') + '</div>' +
+        (more > 0 ? '<button type="button" class="see-all">See all ' + all.length + ' in the filter list →</button>' : '');
+      var m = add(html, 'bot');
+      var btn = m.querySelector('.see-all');
+      if (btn) btn.addEventListener('click', function () {
+        setFilters({ min: 20000, max: 30000, type: 'Lab', feats: feats }); showTab('filter');
+        document.getElementById('step-3').querySelector('.ui-tabs').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
       });
-    },
-    either: function () {
-      add('Either is fine', 'user');
-      typing(900, function () {
-        add('I found 3 spaces between 20,000 and 30,000 RSF at Portside:' +
-          result('1140 Veterans Blvd · 1st floor', '±21,682 RSF · Spec suite') +
-          result('1140 Veterans Blvd · 2nd floor', '±27,155 RSF · Hypothetical plan') +
-          result('1140 Veterans Blvd · 3rd floor', '±26,953 RSF · Hypothetical plan'), 'bot');
-        later(handoff, 700);
-      });
-    }
-  };
+      later(handoff, 700);
+    });
+  }
   function handoff() {
     add('Want me to connect you with the leasing team about these?', 'bot');
     var c = document.createElement('div'); c.className = 'choices';
     c.innerHTML = '<button type="button">Contact the leasing team</button><button type="button">Start a new search</button>';
-    c.querySelectorAll('button')[1].addEventListener('click', start);
+    c.querySelectorAll('button')[1].addEventListener('click', function () { run(); });
     log.appendChild(c); scroll();
   }
-  function start() {
+  function run() {
     timers.forEach(clearTimeout); timers = []; log.innerHTML = '';
-    add('Hi! Tell me what kind of space you’re looking for, or pick a quick option below.', 'bot');
+    add('Hi! Tell me what kind of space you’re looking for.', 'bot');
     later(function () { add('We need about 25,000 SF of lab space, ideally ready soon', 'user'); }, 900);
     later(function () {
       typing(1000, function () {
@@ -413,7 +808,7 @@
           c.querySelectorAll('button').forEach(function (b) {
             b.addEventListener('click', function () {
               c.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
-              b.classList.add('is-picked'); ANSWERS[b.dataset.a]();
+              b.classList.add('is-picked'); answer(b.dataset.a === 'ready');
             });
           });
           log.appendChild(c); scroll();
@@ -421,21 +816,12 @@
       });
     }, 1700);
   }
-  document.getElementById('replay').addEventListener('click', start);
-  // Start when the chat scrolls into view
-  var chat = document.querySelector('.chat'), begun = false;
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) { if (!begun && es[0].isIntersecting) { begun = true; start(); } }, { threshold: .4 }).observe(chat);
-  } else start();
-  // Show the first message right away so the chat is never empty
-  add('Hi! Tell me what kind of space you’re looking for, or pick a quick option below.', 'bot');
+  startChat = function () { if (!started) { started = true; run(); } };
+  document.getElementById('replay').addEventListener('click', run);
+  add('Hi! Tell me what kind of space you’re looking for.', 'bot');
 })();
 
-// ---- Embed auto-height and step nav highlight ------------------------------------------------
-window.addEventListener('message', function (e) {
-  if (e.origin !== location.origin) return;
-  if (e.data && e.data.type === 'hp-embed-height') document.getElementById('hp-portside').style.height = e.data.height + 'px';
-});
+// ---- Step nav highlight ----------------------------------------------------------------------------
 (function () {
   var links = document.querySelectorAll('.steps-nav a');
   if (!('IntersectionObserver' in window)) return;

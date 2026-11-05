@@ -366,7 +366,38 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && picked && !dlg.open) clearSelection(); });
 
   // ---- Site plan (SVG): show each building's ON layer only if it has space ----------------------
-  var byNum = {};
+  var byNum = {}, planSvg = null;
+  // Every layer whose id ends in "ON" is a building highlight; show it only when that building has space.
+  function applyOnLayers() {
+    if (!planSvg) return;
+    planSvg.querySelectorAll('g[id$="ON"]').forEach(function (g) {
+      var num = (g.getAttribute('data-name') || g.id).replace(/^_/, '').replace(/ON$/i, '');
+      var b = bySvg[g.id] || byNum[num];
+      g.classList.remove('is-on', 'is-picked'); g.removeAttribute('tabindex'); g.removeAttribute('role'); g.removeAttribute('aria-label'); g._b = null; g.style.display = '';
+      if (!b) return;                                   // no building in the data: leave the artwork as drawn
+      if (!b.total) { g.style.display = 'none'; return; } // building is fully leased: hide its highlight
+      b.svgEl = g; g._b = b;
+      g.classList.add('is-on');
+      g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
+      g.setAttribute('aria-label', b.name + ', ' + fmt(b.total) + ' RSF available');
+    });
+  }
+  function indexBuildings() {
+    byModel = {}; bySvg = {}; byNum = {};
+    buildings.forEach(function (b) {
+      byModel[b.modelId] = b; if (b.svgId) bySvg[b.svgId] = b;
+      var m = String(b.name).match(/^\d+/); if (m) byNum[m[0]] = b;
+    });
+  }
+  // Demo hook: the host page can send new data (same shape as the WordPress REST output) and everything
+  // here re-renders, the same way it would after a WordPress edit.
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin || !e.data || e.data.type !== 'hp-data') return;
+    buildings = normalize(e.data.data); indexBuildings();
+    clearSelection(); renderList(); applyOnLayers();
+    if (mvLoaded) paint();
+    postHeight();
+  });
   function loadSitePlan() {
     return fetch(PROP.siteplan).then(function (r) { return r.text(); }).then(function (txt) {
       var holder = $('view-plan');
@@ -377,18 +408,13 @@
       svg.removeAttribute('width'); svg.removeAttribute('height');
       holder.insertBefore(svg, holder.firstChild);
       $('plan-status').remove();
-      // Every layer whose id ends in "ON" is a building highlight; hide the ones without space.
-      svg.querySelectorAll('g[id$="ON"]').forEach(function (g) {
-        var num = (g.getAttribute('data-name') || g.id).replace(/^_/, '').replace(/ON$/i, '');
-        var b = bySvg[g.id] || byNum[num];
-        if (!b) return;                                   // no building in the data: leave the artwork as drawn
-        if (!b.total) { g.style.display = 'none'; return; } // building is fully leased: hide its highlight
-        b.svgEl = g;
-        g.classList.add('is-on');
-        g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
-        g.setAttribute('aria-label', b.name + ', ' + fmt(b.total) + ' RSF available');
-        g.addEventListener('click', function () { select(b, null); });
-        g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(b, null); } });
+      planSvg = svg;
+      applyOnLayers();
+      // One click/keyboard handler for all highlights, so the data can change without re-wiring
+      svg.addEventListener('click', function (e) { var g = e.target.closest('.is-on'); if (g && g._b) select(g._b, null); });
+      svg.addEventListener('keydown', function (e) {
+        var g = e.target.closest && e.target.closest('.is-on');
+        if (g && g._b && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); select(g._b, null); }
       });
     }).catch(function () { $('plan-status').textContent = 'The site plan couldn’t load.'; });
   }
@@ -589,15 +615,13 @@
     fetch(PROP.anchors).then(function (r) { return r.json(); }).catch(function () { return {}; })
   ]).then(function (r) {
     buildings = r[0]; anchors = r[1];
-    buildings.forEach(function (b) {
-      byModel[b.modelId] = b; if (b.svgId) bySvg[b.svgId] = b;
-      var m = String(b.name).match(/^\d+/); if (m) byNum[m[0]] = b;
-    });
+    indexBuildings();
     renderList();
     return loadSitePlan();
   }).then(function () {
     if (location.hash === '#3d') setView('3d');
     postHeight();
+    if (parent !== window) parent.postMessage({ type: 'hp-embed-ready' }, '*');
   }).catch(function () {
     $('avail-title').textContent = 'Availability couldn’t load';
     $('list').innerHTML = '<li class="hp-empty">Refresh the page to try again.</li>';
