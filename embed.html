@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portside Availability</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<style>
+  /* Healthpeak availability embed. Layout: a view switcher (Site plan / 3D & AR) over one stage, with the
+     availability sidebar beside it on desktop and below it on phones. Brand: gold #a39068, ink #333536, cream #f0ece6. */
+  :root {
+    --hp-gold: #a39068;
+    --hp-gold-deep: #85744f;
+    --hp-ink: #333536;
+    --hp-ink-soft: #5d6061;
+    --hp-cream: #f0ece6;
+    --hp-paper: #faf8f5;
+    --hp-line: #d9d2c6;
+    --hp-display: "freight-neo-pro", "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --hp-body: "avenir-next-lt-pro", "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #fff; color: var(--hp-ink); font-family: var(--hp-body); }
+  body { padding: 0; }
+  .hp-av { display: grid; gap: 16px; }
+  .hp-eyebrow { margin: 0 0 6px; font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--hp-gold-deep); }
+
+  /* View switcher */
+  .hp-av__bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; }
+  .hp-av__tabs { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--hp-cream); }
+  .hp-av__tabs button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--hp-ink); font: 600 .9rem/1 var(--hp-body); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+  .hp-av__tabs button svg { width: 18px; height: 18px; color: var(--hp-gold-deep); }
+  .hp-av__tabs button[aria-selected="true"] { background: var(--hp-ink); color: #fff; }
+  .hp-av__tabs button[aria-selected="true"] svg { color: var(--hp-gold); }
+  .hp-av__tabs button:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 2px; }
+  .hp-av__legend { display: flex; gap: 14px; font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--hp-ink-soft); }
+  .hp-av__legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .hp-av__legend i { width: 12px; height: 12px; border-radius: 2px; background: #b58a2d; }
+  .hp-av__legend i.leased { background: #fff; border: 1px solid var(--hp-line); }
+
+  .hp-av__body { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 900px) { .hp-av__body { grid-template-columns: minmax(0, 1fr) 320px; align-items: start; } }
+
+  .hp-av__stage { position: relative; border-radius: 6px; border: 1px solid var(--hp-line); overflow: hidden; background: var(--hp-paper); }
+
+  /* Site plan view */
+  .hp-plan2d { position: relative; aspect-ratio: 1224 / 792; }
+  .hp-plan2d svg { display: block; width: 100%; height: 100%; }
+  .hp-plan2d .is-on { cursor: pointer; transition: filter .15s ease; outline: none; }
+  .hp-plan2d .is-on:hover, .hp-plan2d .is-on:focus-visible { filter: brightness(1.12) drop-shadow(0 0 6px rgba(163, 144, 104, .9)); }
+  .hp-plan2d .is-on.is-picked { filter: brightness(.82) drop-shadow(0 0 8px rgba(51, 53, 54, .55)); }
+  .hp-plan2d__status { position: absolute; inset: 0; display: grid; place-items: center; color: var(--hp-ink-soft); font-size: .9rem; }
+  .hp-go3d { position: absolute; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border: 0; border-radius: 999px; background: var(--hp-ink); color: #fff; font: 600 .86rem/1 var(--hp-body); cursor: pointer; box-shadow: 0 6px 16px rgba(51,53,54,.25); }
+  .hp-go3d svg { width: 18px; height: 18px; color: var(--hp-gold); }
+  .hp-go3d:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 3px; }
+  @media (max-width: 520px) { .hp-go3d { position: static; width: calc(100% - 24px); margin: 0 12px 12px; justify-content: center; } }
+
+  /* 3D view */
+  .hp-3d { position: relative; background: radial-gradient(120% 90% at 50% 35%, var(--hp-paper) 0%, var(--hp-cream) 70%); }
+  .hp-3d model-viewer { display: block; width: 100%; aspect-ratio: 1224 / 792; min-height: 320px; background: transparent; --poster-color: transparent; --progress-bar-color: var(--hp-gold); --progress-bar-height: 3px; }
+  .hp-3d model-viewer.is-hot { cursor: pointer; }
+  .hp-3d__scale { position: absolute; left: 14px; bottom: 12px; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--hp-ink-soft); pointer-events: none; }
+  .hp-3d.can-ar .hp-3d__scale { bottom: 74px; }
+  .hp-pin { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px 6px 8px; border: 0; border-radius: 999px; background: var(--hp-ink); color: #fff; font: 600 .74rem/1 var(--hp-body); white-space: nowrap; cursor: pointer; transform: translateY(-14px); box-shadow: 0 3px 10px rgba(51,53,54,.25); }
+  .hp-pin::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--hp-gold); }
+  .hp-pin[aria-pressed="true"] { background: var(--hp-gold-deep); }
+  .hp-pin[aria-pressed="true"]::before { background: #fff; }
+  .hp-pin:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 2px; }
+  model-viewer.xr-open .hp-pin { visibility: hidden; }
+  .hp-arbtn { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border: 0; border-radius: 999px; background: var(--hp-ink); color: #fff; font: 600 .95rem/1 var(--hp-body); box-shadow: 0 6px 18px rgba(51,53,54,.25); cursor: pointer; white-space: nowrap; }
+  .hp-arbtn svg { width: 20px; height: 20px; color: var(--hp-gold); }
+  .hp-arbtn:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 3px; }
+
+  /* Floor plan card inside Android AR */
+  .hp-xr { position: absolute; left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); max-width: 460px; margin-inline: auto; padding: 14px; border-radius: 10px; background: rgba(250, 248, 245, .97); color: var(--hp-ink); font-family: var(--hp-body); box-shadow: 0 10px 30px rgba(0,0,0,.35); display: grid; gap: 10px; max-height: 72%; overflow: auto; }
+  .hp-xr[hidden] { display: none; }
+  .hp-xr__head { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+  .hp-xr__name { margin: 0; font: 500 1.15rem/1.2 var(--hp-display); }
+  .hp-xr__close { flex: none; width: 40px; height: 40px; border: 1px solid var(--hp-line); border-radius: 50%; background: #fff; color: var(--hp-ink); font-size: 1.2rem; }
+  .hp-xr__tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .hp-xr__tabs button { min-height: 40px; padding: 8px 14px; border: 1px solid var(--hp-line); border-radius: 999px; background: #fff; color: var(--hp-ink); font: 600 .85rem/1 var(--hp-body); }
+  .hp-xr__tabs button[aria-selected="true"] { background: var(--hp-gold); border-color: var(--hp-gold); color: #fff; }
+  .hp-xr__plan { margin: 0; border: 1px solid var(--hp-line); border-radius: 6px; background: #fff; display: grid; place-items: center; min-height: 120px; overflow: hidden; }
+  .hp-xr__plan img { display: block; width: 100%; height: auto; max-height: 38vh; object-fit: contain; }
+  .hp-xr__plan p { margin: 0; padding: 16px; text-align: center; font-size: .85rem; color: var(--hp-ink-soft); }
+  .hp-xr__foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .hp-xr__meta { margin: 0; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  .hp-xr__meta small { display: block; color: var(--hp-ink-soft); font-size: .76rem; }
+  .hp-xr__pdf { flex: none; padding: 11px 16px; border-radius: 999px; background: var(--hp-ink); color: #fff; font: 600 .85rem/1 var(--hp-body); text-decoration: none; }
+  .hp-xr__pdf[hidden], .hp-xr__hint[hidden] { display: none; }
+  .hp-xr__hint { position: absolute; left: 50%; top: calc(16px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); margin: 0; padding: 8px 14px; border-radius: 999px; background: rgba(51,53,54,.85); color: #fff; font: 600 .8rem/1.2 var(--hp-body); white-space: nowrap; }
+
+  /* Sidebar */
+  .hp-side { display: grid; gap: 16px; min-width: 0; }
+  .hp-side h3 { margin: 0; font: 500 1.2rem/1.2 var(--hp-display); }
+  .hp-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+  .hp-row { width: 100%; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: baseline; padding: 12px 14px; border: 1px solid var(--hp-line); border-radius: 6px; background: var(--hp-paper); color: var(--hp-ink); text-align: left; font: inherit; cursor: pointer; }
+  .hp-row strong { font-weight: 600; font-size: .95rem; }
+  .hp-row span { font-size: .85rem; color: var(--hp-ink-soft); font-variant-numeric: tabular-nums; }
+  .hp-row em { grid-column: 1 / -1; font-style: normal; font-size: .78rem; color: var(--hp-gold-deep); letter-spacing: .04em; }
+  .hp-row:hover { border-color: var(--hp-gold); }
+  .hp-row[aria-pressed="true"] { border-color: var(--hp-gold); background: #f4efe4; box-shadow: inset 3px 0 0 var(--hp-gold); }
+  .hp-row:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 2px; }
+  .hp-empty { font-size: .9rem; color: var(--hp-ink-soft); }
+  .hp-avail.is-flash { animation: hp-flash 1.6s ease-out; }
+  @keyframes hp-flash { 0% { box-shadow: 0 0 0 4px var(--hp-gold); border-radius: 6px; } 100% { box-shadow: 0 0 0 0 transparent; } }
+
+  .hp-detail { padding: 18px; border-radius: 6px; background: #fff; border: 1px solid var(--hp-line); }
+  .hp-detail__head { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+  .hp-close { flex: none; width: 32px; height: 32px; border: 1px solid var(--hp-line); border-radius: 50%; background: transparent; color: var(--hp-ink); font-size: 1.1rem; cursor: pointer; }
+  .hp-close:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 2px; }
+  .hp-total { margin: 6px 0 12px; font-size: .9rem; color: var(--hp-ink-soft); font-variant-numeric: tabular-nums; }
+  .hp-floors { width: 100%; border-collapse: collapse; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  .hp-floors th { text-align: left; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--hp-ink-soft); font-weight: 600; padding: 0 0 6px; border-bottom: 1px solid var(--hp-line); }
+  .hp-floors td { padding: 10px 0; border-bottom: 1px solid #eee9e0; vertical-align: top; }
+  .hp-floors td:nth-child(2), .hp-floors th:nth-child(2) { text-align: right; padding-right: 12px; white-space: nowrap; }
+  .hp-floors td:last-child, .hp-floors th:last-child { text-align: right; }
+  .hp-floors small { display: block; color: var(--hp-ink-soft); font-size: .78rem; }
+  .hp-floors tr.is-picked td { background: #f4efe4; }
+  .hp-view { padding: 0; border: 0; background: none; color: var(--hp-gold-deep); font-family: inherit; font-weight: 600; font-size: .88rem; cursor: pointer; }
+  .hp-view:hover { text-decoration: underline; }
+  .hp-view:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 2px; }
+
+  .hp-qr { display: none; gap: 14px; align-items: center; padding: 16px; border-radius: 6px; background: var(--hp-ink); color: #fff; }
+  .hp-av.is-3d.no-ar .hp-qr { display: flex; }
+  .hp-qr__code { flex: none; width: 96px; background: #fff; padding: 6px; border-radius: 4px; }
+  .hp-qr__code svg { display: block; width: 100%; height: auto; }
+  .hp-qr p { margin: 0; font-size: .84rem; line-height: 1.45; color: #d9d6d1; }
+  .hp-qr strong { color: #fff; }
+  .hp-tip { margin: 0; font-size: .86rem; color: var(--hp-ink-soft); }
+
+  /* Floor plan popup */
+  .hp-plan { width: min(960px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 22px; border: 0; border-radius: 8px; background: #fff; color: var(--hp-ink); font-family: var(--hp-body); box-shadow: 0 24px 60px rgba(0,0,0,.3); }
+  .hp-plan[open] { display: grid; gap: 14px; }
+  .hp-plan::backdrop { background: rgba(51, 53, 54, .55); }
+  .hp-plan__head { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+  .hp-plan__title { margin: 0; font: 500 1.4rem/1.15 var(--hp-display); }
+  .hp-plan__close { flex: none; width: 40px; height: 40px; border: 1px solid var(--hp-line); border-radius: 50%; background: #fff; color: var(--hp-ink); font-size: 1.25rem; cursor: pointer; }
+  .hp-plan__fig { margin: 0; min-height: 260px; display: grid; place-items: center; border: 1px solid var(--hp-line); border-radius: 6px; background: var(--hp-paper); overflow: auto; }
+  .hp-plan__fig img { display: block; max-width: 100%; max-height: calc(100vh - 260px); object-fit: contain; }
+  .hp-plan__fig object { display: block; width: 100%; height: min(62vh, 640px); border: 0; }
+  .hp-plan__fig p { margin: 0; padding: 24px; max-width: 42ch; text-align: center; color: var(--hp-ink-soft); line-height: 1.5; }
+  .hp-plan__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
+  .hp-plan__nav { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hp-plan__nav button { min-height: 38px; padding: 8px 14px; border: 1px solid var(--hp-line); border-radius: 999px; background: #fff; color: var(--hp-ink); font-family: inherit; font-weight: 600; font-size: .85rem; cursor: pointer; }
+  .hp-plan__nav button[aria-current="true"] { background: var(--hp-gold); border-color: var(--hp-gold); color: #fff; }
+  .hp-plan__pdf { padding: 12px 18px; border-radius: 999px; background: var(--hp-ink); color: #fff; font-weight: 600; font-size: .9rem; text-decoration: none; }
+  .hp-plan__pdf[hidden] { display: none; }
+  .hp-plan button:focus-visible, .hp-plan a:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .hp-avail.is-flash { animation: none; } .hp-plan2d .is-on { transition: none; } }
+</style>
+</head>
+<body>
+<div class="hp-av" id="hp-av">
+  <div class="hp-av__bar">
+    <div class="hp-av__tabs" role="tablist" aria-label="Map view">
+      <button type="button" role="tab" id="tab-plan" aria-controls="view-plan" aria-selected="true">Site plan</button>
+      <button type="button" role="tab" id="tab-3d" aria-controls="view-3d" aria-selected="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z"/><path d="M4 7.4l8 4.6 8-4.6M12 12v9.2"/></svg>3D &amp; AR
+      </button>
+    </div>
+    <div class="hp-av__legend" aria-hidden="true"><span><i></i>Available</span><span><i class="leased"></i>Leased</span></div>
+  </div>
+
+  <div class="hp-av__body">
+    <div class="hp-av__stage">
+      <!-- Site plan (default) -->
+      <div class="hp-plan2d" id="view-plan" role="tabpanel" aria-labelledby="tab-plan">
+        <div class="hp-plan2d__status" id="plan-status">Loading site plan…</div>
+        <button class="hp-go3d" id="go3d" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z"/><path d="M4 7.4l8 4.6 8-4.6M12 12v9.2"/></svg>
+          View in 3D &amp; on your desk
+        </button>
+      </div>
+
+      <!-- 3D & AR (loads only when opened) -->
+      <div class="hp-3d" id="view-3d" role="tabpanel" aria-labelledby="tab-3d" hidden>
+        <model-viewer id="mv"
+          alt="3D model of the Portside campus with buildings that have available space shown in gold"
+          ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor" ar-scale="auto"
+          camera-controls touch-action="pan-y"
+          camera-orbit="-25deg 55deg 62%" field-of-view="26deg" min-camera-orbit="auto 10deg auto" max-camera-orbit="auto 82deg auto"
+          auto-rotate auto-rotate-delay="2500" rotation-per-second="6deg" interaction-prompt="none" interpolation-decay="120"
+          environment-image="neutral" exposure="1.05" shadow-intensity="0.9" shadow-softness="0.8" loading="eager" reveal="auto">
+          <button slot="ar-button" class="hp-arbtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z"/><path d="M4 7.4l8 4.6 8-4.6M12 12v9.2"/></svg>
+            View on your desk
+          </button>
+          <div class="hp-xr" id="xr" hidden>
+            <div class="hp-xr__head">
+              <div><p class="hp-eyebrow" id="xr-eyebrow"></p><h3 class="hp-xr__name" id="xr-name"></h3></div>
+              <button class="hp-xr__close" id="xr-close" type="button" aria-label="Close floor plan">×</button>
+            </div>
+            <div class="hp-xr__tabs" id="xr-tabs" role="tablist" aria-label="Available floors"></div>
+            <figure class="hp-xr__plan" id="xr-plan"></figure>
+            <div class="hp-xr__foot"><p class="hp-xr__meta" id="xr-meta"></p><a class="hp-xr__pdf" id="xr-pdf" target="_blank" rel="noopener">Open PDF ↗</a></div>
+          </div>
+          <p class="hp-xr__hint" id="xr-hint" hidden>Tap a gold label or a gold floor for its floor plan</p>
+        </model-viewer>
+        <span class="hp-3d__scale">Lands about 60 × 40 cm · 24 × 16 in</span>
+      </div>
+    </div>
+
+    <div class="hp-side">
+      <div class="hp-avail">
+        <p class="hp-eyebrow">Available now</p>
+        <h3 id="avail-title">Loading availability…</h3>
+        <ul class="hp-list" id="list"></ul>
+      </div>
+      <div class="hp-detail" id="detail" hidden aria-live="polite">
+        <div class="hp-detail__head">
+          <div><p class="hp-eyebrow">Selected building</p><h3 id="detail-name"></h3></div>
+          <button class="hp-close" id="detail-close" type="button" aria-label="Close building details">×</button>
+        </div>
+        <p class="hp-total" id="detail-total"></p>
+        <table class="hp-floors">
+          <thead><tr><th scope="col">Floor</th><th scope="col">RSF</th><th scope="col">Plan</th></tr></thead>
+          <tbody id="detail-rows"></tbody>
+        </table>
+      </div>
+      <aside class="hp-qr" aria-label="Open on your phone">
+        <div class="hp-qr__code" id="qr"></div>
+        <p><strong>Put it on your desk.</strong> Scan with your phone camera, then tap View on your desk.</p>
+      </aside>
+      <p class="hp-tip" id="tip">Click a gold building to see its available floors.</p>
+    </div>
+  </div>
+</div>
+
+<dialog class="hp-plan" id="plan" aria-labelledby="plan-title">
+  <div class="hp-plan__head">
+    <div><p class="hp-eyebrow" id="plan-eyebrow"></p><h3 class="hp-plan__title" id="plan-title"></h3></div>
+    <button class="hp-plan__close" id="plan-close" type="button" aria-label="Close floor plan">×</button>
+  </div>
+  <figure class="hp-plan__fig" id="plan-fig"></figure>
+  <div class="hp-plan__foot">
+    <div class="hp-plan__nav" id="plan-nav" role="group" aria-label="Other available floors"></div>
+    <a class="hp-plan__pdf" id="plan-pdf" target="_blank" rel="noopener">Download PDF</a>
+  </div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+(function () {
+  // ---- Settings (per property) ------------------------------------------------------------------
+  // On WordPress these come from the embed URL or block settings, and the data from the REST API:
+  //   BUILDINGS: '/wp-json/wp/v2/building?per_page=100&_fields=id,title,acf'
+  //   AVAILABILITY: '/wp-json/wp/v2/availability?per_page=100&_fields=id,acf'
+  var PROPERTIES = {
+    portside: {
+      siteplan: 'siteplans/portside.svg',
+      model: 'models/portside-campus.glb',
+      iosModel: 'models/portside-campus.usdz',
+      anchors: 'models/portside-campus-anchors.json'
+    }
+  };
+  var SOURCE = { combined: 'data/availability.json' };
+  var MODEL_VIEWER = 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js';
+  var params = new URLSearchParams(location.search);
+  var PROP = PROPERTIES[params.get('property') || 'portside'];
+  var COLOR = { leased: '#f3f1ed', space: '#a39068', spacePicked: '#8a7650', rest: '#e7dec9', roof: '#cfc09c' };
+  var HOME_ORBIT = '-25deg 55deg 62%';
+
+  // ---- Data adapter: WordPress (ACF) → page ---------------------------------------------------
+  function loadData() {
+    if (SOURCE.combined) return fetch(SOURCE.combined).then(function (r) { return r.json(); });
+    return Promise.all([fetch(SOURCE.buildings), fetch(SOURCE.availability)])
+      .then(function (rs) { return Promise.all(rs.map(function (r) { return r.json(); })); })
+      .then(function (j) { return { buildings: j[0], availability: j[1] }; });
+  }
+  function decode(html) { var t = document.createElement('textarea'); t.innerHTML = html; return t.value; }
+  function normalize(j) {
+    var byId = {};
+    j.buildings.forEach(function (b) {
+      byId[b.id] = { id: b.id, name: decode(b.title.rendered), modelId: b.acf.model_id, svgId: b.acf.svg_layer_id, spaces: [], total: 0 };
+    });
+    j.availability.forEach(function (a) {
+      var f = a.acf, b = byId[f.building];
+      if (!b || f.status !== 'Available') return;
+      b.spaces.push({ floor: +f.floor, suite: f.suite, rsf: +f.rsf, type: f.plan_type || '', pdf: f.floor_plan_pdf || '', image: f.floor_plan_image || '' });
+      b.total += +f.rsf;
+    });
+    return Object.keys(byId).map(function (k) { var b = byId[k]; b.spaces.sort(function (x, y) { return x.floor - y.floor; }); return b; });
+  }
+
+  // ---- Shared state ----------------------------------------------------------------------------
+  var $ = function (id) { return document.getElementById(id); };
+  var root = $('hp-av'), mv = $('mv'), dlg = $('plan');
+  var buildings = [], byModel = {}, bySvg = {}, anchors = {}, picked = null, pickedFloor = null, view = 'plan', inXR = false, mvLoaded = false;
+  var fmt = function (n) { return '±' + n.toLocaleString('en-US'); };
+  var ordinal = function (n) { var s = ['th', 'st', 'nd', 'rd'], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
+  var track = function (name, data) { try { (window.gtag || (parent !== window && parent.gtag) || function () {})('event', name, data || {}); } catch (e) {} };
+
+  // ---- Sidebar ---------------------------------------------------------------------------------
+  function renderList() {
+    var avail = buildings.filter(function (b) { return b.total; });
+    $('avail-title').textContent = avail.length ? avail.length + (avail.length === 1 ? ' building' : ' buildings') + ' with space' : 'Fully leased';
+    var list = $('list'); list.innerHTML = '';
+    avail.forEach(function (b) {
+      var li = document.createElement('li');
+      li.innerHTML = '<button type="button" class="hp-row" aria-pressed="false"><strong></strong><span></span><em></em></button>';
+      var btn = li.firstChild, floors = b.spaces.map(function (s) { return s.floor; });
+      btn.querySelector('strong').textContent = b.name;
+      btn.querySelector('span').textContent = fmt(b.total) + ' RSF';
+      btn.querySelector('em').textContent = (floors.length > 1 ? 'Floors ' : 'Floor ') + floors.join(', ');
+      btn.dataset.key = b.id;
+      btn.addEventListener('click', function () { select(b, null); });
+      list.appendChild(li);
+    });
+    if (!avail.length) list.innerHTML = '<li class="hp-empty">Every building here is currently leased.</li>';
+  }
+  function renderDetail(b, floor) {
+    $('detail-name').textContent = b.name;
+    $('detail-total').textContent = fmt(b.total) + ' RSF available on ' + b.spaces.length + (b.spaces.length === 1 ? ' floor' : ' floors');
+    var tb = $('detail-rows'); tb.innerHTML = '';
+    b.spaces.forEach(function (s) {
+      var tr = document.createElement('tr'); if (floor === s.floor) tr.className = 'is-picked';
+      tr.innerHTML = '<td></td><td></td><td></td>';
+      tr.children[0].textContent = ordinal(s.floor) + ' floor';
+      if (s.type) { var sm = document.createElement('small'); sm.textContent = s.type; tr.children[0].appendChild(sm); }
+      tr.children[1].textContent = fmt(s.rsf);
+      if (s.image || s.pdf) {
+        var v = document.createElement('button'); v.type = 'button'; v.className = 'hp-view'; v.textContent = 'View';
+        v.setAttribute('aria-label', 'View ' + ordinal(s.floor) + ' floor plan');
+        v.addEventListener('click', function () { openPlan(b, s); }); tr.children[2].appendChild(v);
+      } else tr.children[2].textContent = '—';
+      tb.appendChild(tr);
+    });
+    $('detail').hidden = false;
+  }
+
+  function select(b, floor) {
+    picked = b; pickedFloor = floor;
+    if (inXR) { paint(); showXR(b, floor); return; }
+    document.querySelectorAll('[data-key]').forEach(function (el) { el.setAttribute('aria-pressed', String(+el.dataset.key === b.id)); });
+    document.querySelectorAll('.hp-plan2d .is-on').forEach(function (g) { g.classList.toggle('is-picked', g === bySvgEl[b.svgId]); });
+    renderDetail(b, floor);
+    if (view === '3d' && mvLoaded) { paint(); focusModel(b); }
+    if (window.matchMedia('(max-width: 899px)').matches) $('detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    track('availability_building_select', { building: b.name, view: view });
+  }
+  function clearSelection() {
+    picked = null; pickedFloor = null;
+    document.querySelectorAll('[data-key]').forEach(function (el) { el.setAttribute('aria-pressed', 'false'); });
+    document.querySelectorAll('.hp-plan2d .is-picked').forEach(function (g) { g.classList.remove('is-picked'); });
+    $('detail').hidden = true;
+    if (mvLoaded) { paint(); mv.cameraTarget = 'auto auto auto'; mv.cameraOrbit = HOME_ORBIT; }
+  }
+  $('detail-close').addEventListener('click', clearSelection);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && picked && !dlg.open) clearSelection(); });
+
+  // ---- Site plan (SVG): show each building's ON layer only if it has space ----------------------
+  var bySvgEl = {};
+  function loadSitePlan() {
+    return fetch(PROP.siteplan).then(function (r) { return r.text(); }).then(function (txt) {
+      var holder = $('view-plan');
+      var doc = new DOMParser().parseFromString(txt, 'image/svg+xml');
+      var svg = document.importNode(doc.documentElement, true);
+      svg.setAttribute('role', 'img');
+      svg.setAttribute('aria-label', 'Site plan of the campus. Buildings with available space are highlighted.');
+      svg.removeAttribute('width'); svg.removeAttribute('height');
+      holder.insertBefore(svg, holder.firstChild);
+      $('plan-status').remove();
+      // Every layer whose id ends in "ON" is a building highlight; hide the ones without space.
+      svg.querySelectorAll('g[id$="ON"]').forEach(function (g) {
+        var b = bySvg[g.id];
+        if (!b || !b.total) { g.style.display = 'none'; return; }
+        bySvgEl[g.id] = g;
+        g.classList.add('is-on');
+        g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
+        g.setAttribute('aria-label', b.name + ', ' + fmt(b.total) + ' RSF available');
+        g.addEventListener('click', function () { select(b, null); });
+        g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(b, null); } });
+      });
+    }).catch(function () { $('plan-status').textContent = 'The site plan couldn’t load.'; });
+  }
+
+  // ---- View switcher -----------------------------------------------------------------------------
+  function setView(v) {
+    view = v;
+    $('tab-plan').setAttribute('aria-selected', String(v === 'plan'));
+    $('tab-3d').setAttribute('aria-selected', String(v === '3d'));
+    $('view-plan').hidden = v !== 'plan';
+    $('view-3d').hidden = v !== '3d';
+    root.classList.toggle('is-3d', v === '3d');
+    $('tip').textContent = v === 'plan' ? 'Click a gold building to see its available floors.' : 'Drag to turn the campus. Click a gold floor to open its floor plan.';
+    if (v === '3d') start3D();
+    track('availability_view', { view: v });
+  }
+  $('tab-plan').addEventListener('click', function () { setView('plan'); });
+  $('tab-3d').addEventListener('click', function () { setView('3d'); });
+  $('go3d').addEventListener('click', function () { setView('3d'); $('tab-3d').focus(); });
+  document.querySelector('.hp-av__tabs').addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { var next = view === 'plan' ? '3d' : 'plan'; setView(next); $(next === 'plan' ? 'tab-plan' : 'tab-3d').focus(); }
+  });
+
+  // ---- 3D & AR -------------------------------------------------------------------------------------
+  var started = false;
+  function start3D() {
+    if (started) return; started = true;
+    var s = document.createElement('script'); s.type = 'module'; s.src = MODEL_VIEWER; document.head.appendChild(s);
+    // Wait until the model is really ready (the 'load' event can be missed when the viewer starts late)
+    function ready() {
+      if (mvLoaded) return;
+      if (!(mv.loaded && mv.model && mv.model.materials)) { setTimeout(ready, 150); return; }
+      mvLoaded = true; arState(); paint(); if (picked) focusModel(picked);
+    }
+    mv.addEventListener('load', ready); ready();
+    mv.setAttribute('ios-src', PROP.iosModel + quickLookBanner());
+    mv.setAttribute('src', PROP.model);
+    addPins();
+  }
+  function paint() {
+    if (!mv.model) return;
+    mv.model.materials.forEach(function (m) {
+      var parts = m.name.split('|'); if (parts.length < 2) return;
+      var b = byModel[parts[0]], lv = parts[1], c = COLOR.leased;
+      if (b && b.total) {
+        var floor = lv.charAt(0) === 'L' ? +lv.slice(1) : null;
+        var has = floor && b.spaces.some(function (s) { return s.floor === floor; });
+        if (has) c = (picked === b && (pickedFloor === null || pickedFloor === floor)) ? COLOR.spacePicked : COLOR.space;
+        else c = lv === 'Roof' ? COLOR.roof : COLOR.rest;
+      }
+      m.pbrMetallicRoughness.setBaseColorFactor(c);
+    });
+  }
+  function focusModel(b) {
+    var a = anchors[b.modelId]; if (!a || inXR) return;
+    mv.removeAttribute('auto-rotate');
+    mv.cameraTarget = a[0] + 'm ' + (a[1] - 0.015) + 'm ' + a[2] + 'm';
+    var o = mv.getCameraOrbit();
+    mv.cameraOrbit = o.theta + 'rad ' + Math.min(o.phi, 1.0) + 'rad 0.26m';
+  }
+  function addPins() {
+    buildings.forEach(function (b) {
+      var a = anchors[b.modelId]; if (!b.total || !a) return;
+      var pin = document.createElement('button');
+      pin.type = 'button'; pin.className = 'hp-pin'; pin.slot = 'hotspot-' + b.id;
+      pin.dataset.position = a[0] + 'm ' + a[1] + 'm ' + a[2] + 'm'; pin.dataset.normal = '0m 1m 0m';
+      pin.dataset.key = b.id; pin.setAttribute('aria-pressed', 'false');
+      pin.textContent = b.name.replace(' Blvd', '') + ' · ' + fmt(b.total);
+      pin.addEventListener('click', function (e) { e.stopPropagation(); select(b, null); });
+      pin.addEventListener('beforexrselect', function (e) { e.preventDefault(); });
+      mv.appendChild(pin);
+    });
+  }
+  function hit(x, y) {
+    var m = mv.materialFromPoint && mv.materialFromPoint(x, y); if (!m) return null;
+    var parts = m.name.split('|'), b = byModel[parts[0]];
+    if (!b || !b.total) return null;
+    var lv = parts[1] || '', floor = lv.charAt(0) === 'L' ? +lv.slice(1) : null;
+    if (floor && !b.spaces.some(function (s) { return s.floor === floor; })) floor = null;
+    return { b: b, floor: floor };
+  }
+  var down = null;
+  mv.addEventListener('pointerdown', function (e) { down = [e.clientX, e.clientY]; });
+  mv.addEventListener('pointerup', function (e) {
+    if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
+    var h = hit(e.clientX, e.clientY); if (!h) return;
+    select(h.b, h.floor);
+    if (!inXR && h.floor) openPlan(h.b, h.b.spaces.filter(function (s) { return s.floor === h.floor; })[0]);
+  });
+  var raf = 0;
+  mv.addEventListener('pointermove', function (e) {
+    if (e.pointerType !== 'mouse' || raf) return;
+    raf = requestAnimationFrame(function () { raf = 0; mv.classList.toggle('is-hot', !!hit(e.clientX, e.clientY)); });
+  });
+  mv.addEventListener('camera-change', function (e) { if (e.detail.source === 'user-interaction') mv.removeAttribute('auto-rotate'); });
+  function arState() { var can = !!mv.canActivateAR; $('view-3d').classList.toggle('can-ar', can); root.classList.toggle('no-ar', !can); }
+  mv.querySelector('[slot="ar-button"]').addEventListener('click', function () { track('ar_view', { model: 'portside' }); });
+
+  // Android AR (WebXR): floor plan card over the camera
+  var xr = $('xr'), xrHint = $('xr-hint');
+  xr.addEventListener('beforexrselect', function (e) { e.preventDefault(); });
+  function showXR(b, floor) {
+    var start = b.spaces.filter(function (s) { return s.floor === floor; })[0] || b.spaces[0];
+    $('xr-name').textContent = b.name; $('xr-eyebrow').textContent = fmt(b.total) + ' RSF available';
+    var tabs = $('xr-tabs'); tabs.innerHTML = '';
+    b.spaces.forEach(function (s) {
+      var t = document.createElement('button'); t.type = 'button'; t.setAttribute('role', 'tab'); t.textContent = ordinal(s.floor) + ' floor';
+      t.dataset.floor = s.floor; t.addEventListener('click', function () { showFloor(b, s); }); tabs.appendChild(t);
+    });
+    showFloor(b, start);
+    xr.hidden = false; xrHint.hidden = true; mv.classList.add('xr-open');
+  }
+  function showFloor(b, s) {
+    pickedFloor = s.floor; paint();
+    document.querySelectorAll('#xr-tabs button').forEach(function (t) { t.setAttribute('aria-selected', String(+t.dataset.floor === s.floor)); });
+    var fig = $('xr-plan'); fig.innerHTML = '';
+    if (s.image) { var img = new Image(); img.src = s.image; img.alt = b.name + ', ' + ordinal(s.floor) + ' floor plan'; fig.appendChild(img); }
+    else { var p = document.createElement('p'); p.textContent = 'Floor plan preview not added yet. Open the PDF to see it.'; fig.appendChild(p); }
+    var meta = $('xr-meta'); meta.textContent = fmt(s.rsf) + ' RSF';
+    if (s.type) { var sm = document.createElement('small'); sm.textContent = ordinal(s.floor) + ' floor · ' + s.type; meta.appendChild(sm); }
+    var pdf = $('xr-pdf'); if (s.pdf) { pdf.href = s.pdf; pdf.hidden = false; } else pdf.hidden = true;
+    track('ar_floor_plan', { building: b.name, floor: s.floor });
+  }
+  function closeXR() { xr.hidden = true; mv.classList.remove('xr-open'); xrHint.hidden = !inXR; picked = null; pickedFloor = null; paint(); }
+  $('xr-close').addEventListener('click', closeXR);
+  mv.addEventListener('ar-status', function (e) {
+    var s = e.detail.status;
+    if (s === 'session-started') { inXR = true; closeXR(); xrHint.hidden = false; setTimeout(function () { xrHint.hidden = true; }, 6000); }
+    if (s === 'not-presenting' || s === 'failed') { inXR = false; xr.hidden = true; xrHint.hidden = true; mv.classList.remove('xr-open'); }
+  });
+
+  // iPhone AR (Quick Look): one banner button back to the availability list
+  function quickLookBanner() {
+    var avail = buildings.filter(function (b) { return b.total; }); if (!avail.length) return '';
+    var total = avail.reduce(function (t, b) { return t + b.total; }, 0);
+    return '#callToAction=' + encodeURIComponent('See floor plans') +
+      '&checkoutTitle=' + encodeURIComponent('Portside · ' + avail.length + (avail.length === 1 ? ' building' : ' buildings') + ' with space') +
+      '&checkoutSubtitle=' + encodeURIComponent(fmt(total) + ' RSF available now');
+  }
+  mv.addEventListener('quick-look-button-tapped', function () {
+    var box = document.querySelector('.hp-avail');
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    box.classList.remove('is-flash'); void box.offsetWidth; box.classList.add('is-flash');
+    var first = buildings.filter(function (b) { return b.total; }).sort(function (x, y) { return y.total - x.total; })[0];
+    if (first) select(first, null);
+    track('ar_quicklook_banner', {});
+  });
+
+  // ---- Floor plan popup ------------------------------------------------------------------------------
+  function openPlan(b, s) {
+    pickedFloor = s.floor; if (mvLoaded) paint();
+    document.querySelectorAll('#detail-rows tr').forEach(function (tr, i) { tr.classList.toggle('is-picked', b.spaces[i] === s); });
+    $('plan-eyebrow').textContent = fmt(s.rsf) + ' RSF' + (s.type ? ' · ' + s.type : '');
+    $('plan-title').textContent = b.name + ', ' + ordinal(s.floor) + ' floor';
+    var fig = $('plan-fig'); fig.innerHTML = '';
+    if (s.image) {
+      var img = new Image(); img.src = s.image; img.alt = b.name + ' ' + ordinal(s.floor) + ' floor plan'; fig.appendChild(img);
+    } else if (s.pdf) {
+      // Placeholder until PNGs exist: show the PDF itself where the browser can.
+      var obj = document.createElement('object'); obj.type = 'application/pdf'; obj.data = s.pdf + '#view=FitH&toolbar=0';
+      obj.setAttribute('aria-label', b.name + ' ' + ordinal(s.floor) + ' floor plan');
+      var fb = document.createElement('p'); fb.textContent = 'This browser can’t show the PDF here. Use Download PDF to open it.';
+      obj.appendChild(fb); fig.appendChild(obj);
+    } else {
+      var p = document.createElement('p'); p.textContent = 'No floor plan has been added for this floor yet.'; fig.appendChild(p);
+    }
+    var nav = $('plan-nav'); nav.innerHTML = '';
+    if (b.spaces.length > 1) b.spaces.forEach(function (o) {
+      var t = document.createElement('button'); t.type = 'button'; t.textContent = ordinal(o.floor) + ' floor';
+      t.setAttribute('aria-current', String(o === s)); t.addEventListener('click', function () { openPlan(b, o); }); nav.appendChild(t);
+    });
+    var pdf = $('plan-pdf'); if (s.pdf) { pdf.href = s.pdf; pdf.hidden = false; } else pdf.hidden = true;
+    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+    track('floor_plan_view', { building: b.name, floor: s.floor });
+  }
+  $('plan-close').addEventListener('click', function () { dlg.close(); });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', function () { pickedFloor = null; if (mvLoaded) paint(); });
+
+  // ---- Fit the iframe to its content (the host page listens for this) --------------------------------
+  function postHeight() {
+    if (parent === window) return;
+    var h = Math.ceil(root.getBoundingClientRect().height) + 4;
+    if (dlg.open) h = Math.max(h, 640); // give the popup room inside the frame
+    parent.postMessage({ type: 'hp-embed-height', height: h }, '*');
+  }
+  if (window.ResizeObserver) new ResizeObserver(postHeight).observe(root);
+  dlg.addEventListener('close', postHeight);
+  window.addEventListener('load', postHeight);
+
+  // QR: this embed, opened straight to the 3D view
+  try { var q = qrcode(0, 'Q'); q.addData(location.href.split('#')[0] + '#3d'); q.make(); $('qr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true }); } catch (e) {}
+
+  // ---- Boot -----------------------------------------------------------------------------------------------
+  Promise.all([
+    loadData().then(normalize),
+    fetch(PROP.anchors).then(function (r) { return r.json(); }).catch(function () { return {}; })
+  ]).then(function (r) {
+    buildings = r[0]; anchors = r[1];
+    buildings.forEach(function (b) { byModel[b.modelId] = b; if (b.svgId) bySvg[b.svgId] = b; });
+    renderList();
+    return loadSitePlan();
+  }).then(function () {
+    if (location.hash === '#3d') setView('3d');
+    postHeight();
+  }).catch(function () {
+    $('avail-title').textContent = 'Availability couldn’t load';
+    $('list').innerHTML = '<li class="hp-empty">Refresh the page to try again.</li>';
+  });
+})();
+</script>
+</body>
+</html>

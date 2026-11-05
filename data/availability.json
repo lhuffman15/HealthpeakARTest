@@ -1,5 +1,5 @@
 {
-  "_note": "SAMPLE DATA from the Portside page (Nov 5 2026), shaped like the planned WordPress REST output (ACF 'Building' and 'Availability' types). Replace with /wp-json/... once the WordPress fields exist. floor_plan_image: path to a PNG/JPG of the plan, shown inside Android AR (PDFs can't display in AR).",
+  "_note": "SAMPLE DATA from the Portside page (Nov 5 2026), shaped like the planned WordPress REST output (ACF 'Building' and 'Availability' types). svg_layer_id = the building's ON layer in the site plan SVG (Illustrator adds the leading underscore). floor_plan_image = PNG/JPG of the plan (PDFs can't display in AR).",
   "buildings": [
     {
       "id": 1100,
@@ -8,7 +8,8 @@
       },
       "acf": {
         "model_id": "1100 Veterans",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_1100ON"
       }
     },
     {
@@ -18,7 +19,8 @@
       },
       "acf": {
         "model_id": "1120 Veterans",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_1120ON"
       }
     },
     {
@@ -28,7 +30,8 @@
       },
       "acf": {
         "model_id": "1130 Veterans",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_1130ON"
       }
     },
     {
@@ -38,7 +41,8 @@
       },
       "acf": {
         "model_id": "1140 Veterans",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_1140ON"
       }
     },
     {
@@ -48,7 +52,8 @@
       },
       "acf": {
         "model_id": "1150 Veterans",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_1150ON"
       }
     },
     {
@@ -58,7 +63,8 @@
       },
       "acf": {
         "model_id": "1170 Veterans",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_1170ON"
       }
     },
     {
@@ -68,7 +74,8 @@
       },
       "acf": {
         "model_id": "1180 Veterans",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_1180ON"
       }
     },
     {
@@ -78,7 +85,8 @@
       },
       "acf": {
         "model_id": "329 Oyster Point",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_329ON"
       }
     },
     {
@@ -88,7 +96,8 @@
       },
       "acf": {
         "model_id": "331 Oyster Point",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_331ON"
       }
     },
     {
@@ -98,7 +107,8 @@
       },
       "acf": {
         "model_id": "333 Oyster Point",
-        "property": "Portside"
+        "property": "Portside",
+        "svg_layer_id": "_333ON"
       }
     }
   ],
