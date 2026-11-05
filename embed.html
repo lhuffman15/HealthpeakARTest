@@ -30,6 +30,8 @@
 
   /* View switcher */
   .hp-av__bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; }
+  .hp-av__tabs[hidden] { display: none; }
+  .hp-av__bar:has(.hp-av__tabs[hidden]) { justify-content: flex-end; }
   .hp-av__tabs { display: inline-flex; padding: 4px; border-radius: 999px; background: var(--hp-cream); }
   .hp-av__tabs button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 999px; background: transparent; color: var(--hp-ink); font: 600 .9rem/1 var(--hp-body); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
   .hp-av__tabs button svg { width: 18px; height: 18px; color: var(--hp-gold-deep); }
@@ -59,10 +61,6 @@
   .hp-plan2d.has-pick .is-on:not(.is-picked) > g[filter] > * { fill: #c9a85f; }
   .hp-plan2d.has-pick .is-on:not(.is-picked):hover > g[filter] > * { fill: #b58a2d; }
   .hp-plan2d__status { position: absolute; inset: 0; display: grid; place-items: center; color: var(--hp-ink-soft); font-size: .9rem; }
-  .hp-go3d { position: absolute; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border: 0; border-radius: 999px; background: var(--hp-ink); color: #fff; font: 600 .86rem/1 var(--hp-body); cursor: pointer; box-shadow: 0 6px 16px rgba(51,53,54,.25); }
-  .hp-go3d svg { width: 18px; height: 18px; color: var(--hp-gold); }
-  .hp-go3d:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 3px; }
-  @media (max-width: 520px) { .hp-go3d { position: static; width: calc(100% - 24px); margin: 0 12px 12px; justify-content: center; } }
 
   /* 3D view */
   .hp-3d { position: relative; background: radial-gradient(120% 90% at 50% 35%, var(--hp-paper) 0%, var(--hp-cream) 70%); }
@@ -178,10 +176,6 @@
       <!-- Site plan (default) -->
       <div class="hp-plan2d" id="view-plan" role="tabpanel" aria-labelledby="tab-plan">
         <div class="hp-plan2d__status" id="plan-status">Loading site plan…</div>
-        <button class="hp-go3d" id="go3d" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z"/><path d="M4 7.4l8 4.6 8-4.6M12 12v9.2"/></svg>
-          View in 3D &amp; on your desk
-        </button>
       </div>
 
       <!-- 3D & AR (loads only when opened) -->
@@ -270,6 +264,9 @@
   if (window.top === window) document.documentElement.classList.add('is-standalone');
   var params = new URLSearchParams(location.search);
   var PROP = PROPERTIES[params.get('property') || 'portside'];
+  // ?views=2d shows the site plan only (no 3D & AR tab). Properties without a model do the same.
+  var ONLY_2D = params.get('views') === '2d' || !PROP.model;
+  if (ONLY_2D) document.querySelector('.hp-av__tabs').hidden = true; // the 3D view stays hidden and its files never load
   // Leased buildings: warm greys, alternating by floor so the floor lines read; roofs a touch darker.
   var COLOR = { leasedA: '#cfcecb', leasedB: '#dddcd8', leasedRoof: '#b9b8b4', space: '#a39068', spacePicked: '#7f6c46', rest: '#e2d7bf', roof: '#c9b991' };
   // The roof continues the alternating pattern as the next "floor" up, so it doesn't blend into the roads.
@@ -398,6 +395,7 @@
 
   // ---- View switcher -----------------------------------------------------------------------------
   function setView(v) {
+    if (ONLY_2D && v === '3d') return;
     view = v;
     $('tab-plan').setAttribute('aria-selected', String(v === 'plan'));
     $('tab-3d').setAttribute('aria-selected', String(v === '3d'));
@@ -410,7 +408,6 @@
   }
   $('tab-plan').addEventListener('click', function () { setView('plan'); });
   $('tab-3d').addEventListener('click', function () { setView('3d'); });
-  $('go3d').addEventListener('click', function () { setView('3d'); $('tab-3d').focus(); });
   document.querySelector('.hp-av__tabs').addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { var next = view === 'plan' ? '3d' : 'plan'; setView(next); $(next === 'plan' ? 'tab-plan' : 'tab-3d').focus(); }
   });

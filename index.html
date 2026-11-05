@@ -23,6 +23,10 @@
   .note { background: var(--ink); color: #e9e6e1; font-size: .8rem; letter-spacing: .04em; }
   .note .wrap { padding-block: 10px; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; }
   .note a { color: #fff; }
+  .versions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 26px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); font-size: .86rem; color: var(--ink-soft); }
+  .versions a { padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font-weight: 600; text-decoration: none; }
+  .versions a[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .versions a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
   .hero { background: var(--cream); border-bottom: 1px solid var(--line); }
   .hero .wrap { padding-block: 44px 40px; }
   .eyebrow { margin: 0 0 8px; font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-deep); }
@@ -67,9 +71,14 @@
 
 <section class="space" id="available-space">
   <div class="wrap">
+    <nav class="versions" aria-label="Demo versions">
+      <span>Show:</span>
+      <a href="./" id="v-both">Site plan + 3D &amp; AR</a>
+      <a href="./?views=2d" id="v-2d">Site plan only</a>
+    </nav>
     <p class="eyebrow">Available space</p>
     <h2>Find your floor</h2>
-    <p class="lede">Gold buildings have space available now. Choose one to see its floors and floor plans, or switch to 3D and place the campus on your desk.</p>
+    <p class="lede" id="lede">Gold buildings have space available now. Choose one to see its floors and floor plans, or switch to 3D and place the campus on your desk.</p>
     <!-- This iframe is the only part that would go on the WordPress page -->
     <iframe class="frame" id="hp-portside" src="embed.html?property=portside" title="Portside availability: site plan, 3D model and floor plans" allow="xr-spatial-tracking; fullscreen" loading="lazy"></iframe>
     <p class="frame-label">Above: the embed in an <code>&lt;iframe&gt;</code>, sizing itself to its content.</p>
@@ -109,6 +118,20 @@ window.addEventListener('message', function (e) {
 </section>
 
 <script>
+  // Demo version switch: ?views=2d passes through to the embed
+  (function () {
+    var only2d = new URLSearchParams(location.search).get('views') === '2d';
+    var frame = document.getElementById('hp-portside');
+    if (only2d) {
+      frame.src = 'embed.html?property=portside&views=2d';
+      document.getElementById('lede').textContent = 'Gold buildings have space available now. Choose one to see its floors and floor plans.';
+      document.querySelector('.note a').href = 'embed.html?property=portside&views=2d';
+      var snip = document.getElementById('snippet').querySelector('code');
+      snip.innerHTML = snip.innerHTML.replace('?property=portside"', '?property=portside&amp;views=2d"');
+    }
+    document.getElementById(only2d ? 'v-2d' : 'v-both').setAttribute('aria-current', 'page');
+  })();
+
   // Host side of the auto-height handshake (same script as the snippet)
   window.addEventListener('message', function (e) {
     if (e.origin !== location.origin) return;
