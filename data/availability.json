@@ -1,0 +1,25 @@
+{
+  "_note": "SAMPLE DATA from the Portside page (Nov 5 2026), shaped like the planned WordPress REST output (ACF 'Building' and 'Availability' types). Replace with /wp-json/... once the WordPress fields exist.",
+  "buildings": [
+    { "id": 1100, "title": { "rendered": "1100 Veterans Blvd" }, "acf": { "model_id": "1100 Veterans", "property": "Portside" } },
+    { "id": 1120, "title": { "rendered": "1120 Veterans Blvd" }, "acf": { "model_id": "1120 Veterans", "property": "Portside" } },
+    { "id": 1130, "title": { "rendered": "1130 Veterans Blvd" }, "acf": { "model_id": "1130 Veterans", "property": "Portside" } },
+    { "id": 1140, "title": { "rendered": "1140 Veterans Blvd" }, "acf": { "model_id": "1140 Veterans", "property": "Portside" } },
+    { "id": 1150, "title": { "rendered": "1150 Veterans Blvd" }, "acf": { "model_id": "1150 Veterans", "property": "Portside" } },
+    { "id": 1170, "title": { "rendered": "1170 Veterans Blvd" }, "acf": { "model_id": "1170 Veterans", "property": "Portside" } },
+    { "id": 1180, "title": { "rendered": "1180 Veterans Blvd" }, "acf": { "model_id": "1180 Veterans", "property": "Portside" } },
+    { "id": 329, "title": { "rendered": "329 Oyster Point Blvd" }, "acf": { "model_id": "329 Oyster Point", "property": "Portside" } },
+    { "id": 331, "title": { "rendered": "331 Oyster Point Blvd" }, "acf": { "model_id": "331 Oyster Point", "property": "Portside" } },
+    { "id": 333, "title": { "rendered": "333 Oyster Point Blvd" }, "acf": { "model_id": "333 Oyster Point", "property": "Portside" } }
+  ],
+  "availability": [
+    { "id": 9001, "acf": { "building": 1140, "floor": 1, "suite": "1st Floor", "rsf": 21682, "status": "Available", "plan_type": "Spec suite",
+      "floor_plan_pdf": "https://f.tlcollect.com/fr2/325/54769/Portside_1140_Veterans_1st_Floor_Spec_Suite_%284%29.pdf?cbcachex=580262" } },
+    { "id": 9002, "acf": { "building": 1140, "floor": 2, "suite": "2nd Floor", "rsf": 27155, "status": "Available", "plan_type": "Hypothetical plan",
+      "floor_plan_pdf": "https://f.tlcollect.com/fr2/225/74226/Portside_1140_Veterans_2nd_Floor_Hypothetical_%281%29.pdf?cbcachex=292354" } },
+    { "id": 9003, "acf": { "building": 1140, "floor": 3, "suite": "3rd Floor", "rsf": 26953, "status": "Available", "plan_type": "Hypothetical plan",
+      "floor_plan_pdf": "https://f.tlcollect.com/fr2/025/58756/Portside_1140_Veterans_3rd_Floor_Hypothetical_%281%29.pdf?cbcachex=151685" } },
+    { "id": 9004, "acf": { "building": 331, "floor": 2, "suite": "2nd Floor", "rsf": 33333, "status": "Available", "plan_type": "Shell",
+      "floor_plan_pdf": "https://f.tlcollect.com/fr2/525/56232/Portside_331_Oyster_Point_2nd_Floor_Shell_%281%29.pdf?cbcachex=869652" } }
+  ]
+}
