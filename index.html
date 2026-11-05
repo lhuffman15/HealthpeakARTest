@@ -49,12 +49,11 @@
 
   /* Comparison table */
   .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
-  table.compare { width: 100%; min-width: 820px; border-collapse: collapse; font-size: .95rem; }
+  table.compare { width: 100%; min-width: 820px; table-layout: fixed; border-collapse: collapse; font-size: .95rem; }
   .compare th, .compare td { padding: 14px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid #ebe6dd; }
   .compare thead th { background: var(--ink); color: #fff; font-family: var(--display); font-weight: 500; font-size: 1.05rem; }
-  .compare thead th.ours { background: var(--gold-deep); }
+  .compare thead th:first-child { width: 150px; }
   .compare tbody th { width: 150px; background: var(--paper); font-weight: 700; font-size: .85rem; letter-spacing: .02em; }
-  .compare td.ours { background: var(--gold-wash); }
   .compare tr:last-child th, .compare tr:last-child td { border-bottom: 0; }
   .fine { font-size: .82rem; color: var(--ink-soft); }
 
@@ -73,10 +72,8 @@
   /* Option pairs */
   .options { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
   @media (min-width: 860px) { .options { grid-template-columns: 1fr 1fr; } }
-  .option { display: grid; gap: 14px; align-content: start; padding: 26px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
-  .option.is-b { border-color: var(--gold); background: linear-gradient(180deg, var(--gold-wash), #fff 55%); }
-  .tag { justify-self: start; padding: 4px 10px; border-radius: 999px; background: var(--ink); color: #fff; font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-  .option.is-b .tag { background: var(--gold-deep); }
+  .option { display: grid; gap: 14px; align-content: start; padding: 26px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper); }
+  .tag { justify-self: start; padding: 4px 10px; border-radius: 999px; background: var(--cream); color: var(--ink); font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
   .option > p { color: var(--ink-soft); }
   .pc { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 9px; }
   .pc li { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: baseline; font-size: .97rem; }
@@ -89,7 +86,7 @@
   .demo { display: grid; gap: 12px; }
   .demo-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; }
   .demo-head a { color: var(--gold-deep); font-weight: 600; font-size: .92rem; }
-  .demo-frame { padding: 20px; border: 1px dashed var(--gold); border-radius: 10px; background: #fff; }
+  .demo-frame { padding: 20px; border: 1px dashed var(--line); border-radius: 10px; background: #fff; }
   .demo-frame iframe { display: block; width: 100%; height: 760px; border: 0; }
 
   /* Chat simulation */
@@ -258,7 +255,7 @@
 
     <div class="demo">
       <div class="demo-head">
-        <h3>Option B in action: a Portside property page</h3>
+        <h3>Example of Option B: a Portside property page</h3>
         <a href="embed.html?property=portside&amp;views=2d" target="_blank" rel="noopener">Open full screen ↗</a>
       </div>
       <p class="fine">Working prototype with sample data. Click a gold building, then a floor, to open its floor plan. Gold buildings come straight from the data.</p>
