@@ -3,146 +3,452 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Portside Embed Demo</title>
+<title>Healthpeak Space Search</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
 <style>
-  /* Layout: a stand-in property page (hero band, Available Space section holding the iframe), then the
-     install notes. Brand tokens match the embed. */
+  /* Layout: a scrolling meeting deck. Cream title band, then one full-width section per step with a
+     sticky step nav; option pairs sit side by side and stack on phones. Brand: gold, ink, cream. */
   :root {
-    --gold: #a39068; --gold-deep: #85744f; --ink: #333536; --ink-soft: #5d6061;
-    --cream: #f0ece6; --paper: #faf8f5; --line: #d9d2c6;
+    --gold: #a39068; --gold-deep: #85744f; --gold-wash: #f4efe4;
+    --ink: #333536; --ink-soft: #5d6061; --cream: #f0ece6; --paper: #faf8f5; --line: #d9d2c6;
+    --plus: #3f7a52; --minus: #a1483c; --mixed: #85744f;
     --display: "freight-neo-pro", "Figtree", "Helvetica Neue", Arial, sans-serif;
     --body: "avenir-next-lt-pro", "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, sans-serif;
-    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
   }
   * { box-sizing: border-box; }
-  html { background: #fff; }
-  body { margin: 0; background: #fff; color: var(--ink); font: 16px/1.55 var(--body); }
-  .wrap { max-width: 1180px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-  .note { background: var(--ink); color: #e9e6e1; font-size: .8rem; letter-spacing: .04em; }
-  .note .wrap { padding-block: 10px; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; }
-  .note a { color: #fff; }
-  .versions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 26px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); font-size: .86rem; color: var(--ink-soft); }
-  .versions a { padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font-weight: 600; text-decoration: none; }
-  .versions a[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: #fff; }
-  .versions a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-  .hero { background: var(--cream); border-bottom: 1px solid var(--line); }
-  .hero .wrap { padding-block: 44px 40px; }
-  .eyebrow { margin: 0 0 8px; font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-deep); }
-  h1 { margin: 0; font: 500 clamp(2rem, 1.4rem + 2.6vw, 3.2rem)/1.05 var(--display); text-wrap: balance; }
-  .specs { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: .92rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
-  .specs strong { color: var(--ink); font-weight: 600; }
-  section.space .wrap { padding-block: 44px 28px; }
-  h2 { margin: 0 0 6px; font: 500 clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem)/1.15 var(--display); }
-  .lede { margin: 0 0 22px; max-width: 62ch; color: var(--ink-soft); }
-  .frame { width: 100%; border: 0; display: block; height: 900px; }
-  .frame-label { margin: 10px 0 0; font-size: .78rem; color: var(--ink-soft); }
-  .frame-label code { font-family: var(--mono); font-size: .76rem; }
-  .install { background: var(--paper); border-top: 1px solid var(--line); }
-  .install .wrap { padding-block: 40px 56px; display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); }
-  @media (min-width: 900px) { .install .wrap { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
-  .install h3 { margin: 0 0 10px; font: 500 1.25rem/1.2 var(--display); }
-  .code h3 { padding-right: 84px; }
-  .code { position: relative; min-width: 0; }
-  pre { margin: 0; padding: 18px; border-radius: 6px; background: #2a2c2d; color: #ece8e1; font: .78rem/1.6 var(--mono); overflow-x: auto; }
-  pre .c { color: #a8a39a; }
-  .copy { position: absolute; top: 10px; right: 10px; padding: 7px 12px; border: 1px solid #55595a; border-radius: 999px; background: #333536; color: #fff; font: 600 .75rem/1 var(--body); cursor: pointer; }
-  .copy:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
-  ol { margin: 0; padding-left: 1.2em; display: grid; gap: 10px; color: var(--ink-soft); font-size: .94rem; }
-  ol strong { color: var(--ink); }
+  html { background: #fff; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: #fff; color: var(--ink); font: 17px/1.55 var(--body); }
+  .wrap { max-width: 1180px; margin-inline: auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+  .eyebrow { margin: 0 0 10px; font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-deep); }
+  h1, h2, h3 { font-family: var(--display); font-weight: 500; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(2.2rem, 1.5rem + 3vw, 3.8rem); line-height: 1.04; }
+  h2 { font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.5rem); line-height: 1.1; }
+  h3 { font-size: 1.35rem; line-height: 1.2; }
+  p { margin: 0; }
+  .lede { margin-top: 14px; max-width: 60ch; font-size: 1.12rem; color: var(--ink-soft); }
+
+  /* Title band */
+  .title { background: var(--cream); border-bottom: 1px solid var(--line); }
+  .title .wrap { padding-block: 64px 52px; }
+
+  /* Step nav */
+  .steps-nav { position: sticky; top: 0; z-index: 5; background: rgba(255,255,255,.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+  .steps-nav ol { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; overflow-x: auto; }
+  .steps-nav a { display: block; padding: 14px 14px 12px; color: var(--ink-soft); text-decoration: none; font-size: .88rem; font-weight: 600; white-space: nowrap; border-bottom: 3px solid transparent; }
+  .steps-nav a:hover, .steps-nav a.is-here { color: var(--ink); border-bottom-color: var(--gold); }
+  .steps-nav a:focus-visible { outline: 3px solid var(--gold); outline-offset: -3px; }
+
+  section { scroll-margin-top: 56px; border-bottom: 1px solid var(--line); }
+  section > .wrap { padding-block: 64px; display: grid; gap: 28px; }
+  .step-head { display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; align-items: baseline; }
+  .step-num { grid-row: span 2; font: 500 3.4rem/1 var(--display); color: var(--gold); min-width: 1.2ch; }
+  .step-head .lede { margin-top: 4px; grid-column: 2; }
+  @media (max-width: 600px) { .step-num { font-size: 2.4rem; } }
+
+  /* Comparison table */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; }
+  table.compare { width: 100%; min-width: 820px; border-collapse: collapse; font-size: .95rem; }
+  .compare th, .compare td { padding: 14px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid #ebe6dd; }
+  .compare thead th { background: var(--ink); color: #fff; font-family: var(--display); font-weight: 500; font-size: 1.05rem; }
+  .compare thead th.ours { background: var(--gold-deep); }
+  .compare tbody th { width: 150px; background: var(--paper); font-weight: 700; font-size: .85rem; letter-spacing: .02em; }
+  .compare td.ours { background: var(--gold-wash); }
+  .compare tr:last-child th, .compare tr:last-child td { border-bottom: 0; }
+  .fine { font-size: .82rem; color: var(--ink-soft); }
+
+  /* Step 1 sample sheet */
+  .sheet-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+  table.sheet { width: 100%; min-width: 760px; border-collapse: collapse; font-size: .86rem; font-variant-numeric: tabular-nums; }
+  .sheet th, .sheet td { padding: 9px 12px; border-right: 1px solid #ebe6dd; border-bottom: 1px solid #ebe6dd; white-space: nowrap; text-align: left; }
+  .sheet thead th { background: #eef0ec; font-weight: 700; font-size: .78rem; color: var(--ink-soft); }
+  .sheet td.num { text-align: right; }
+  .sheet .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .74rem; font-weight: 700; }
+  .pill.avail { background: var(--gold-wash); color: var(--gold-deep); }
+  .pill.leased { background: #eeeeec; color: var(--ink-soft); }
+  .checklist { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0; padding: 0; list-style: none; font-size: .95rem; color: var(--ink-soft); }
+  .checklist li::before { content: "✓"; margin-right: 8px; color: var(--plus); font-weight: 700; }
+
+  /* Option pairs */
+  .options { display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 860px) { .options { grid-template-columns: 1fr 1fr; } }
+  .option { display: grid; gap: 14px; align-content: start; padding: 26px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+  .option.is-b { border-color: var(--gold); background: linear-gradient(180deg, var(--gold-wash), #fff 55%); }
+  .tag { justify-self: start; padding: 4px 10px; border-radius: 999px; background: var(--ink); color: #fff; font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .option.is-b .tag { background: var(--gold-deep); }
+  .option > p { color: var(--ink-soft); }
+  .pc { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 9px; }
+  .pc li { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: baseline; font-size: .97rem; }
+  .pc li::before { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-weight: 700; font-size: .9rem; line-height: 1; color: #fff; transform: translateY(3px); }
+  .pc .plus::before { content: "+"; background: var(--plus); }
+  .pc .minus::before { content: "−"; background: var(--minus); }
+  .pc .mixed::before { content: "±"; background: var(--mixed); }
+
+  /* Live embed */
+  .demo { display: grid; gap: 12px; }
+  .demo-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; }
+  .demo-head a { color: var(--gold-deep); font-weight: 600; font-size: .92rem; }
+  .demo-frame { padding: 20px; border: 1px dashed var(--gold); border-radius: 10px; background: #fff; }
+  .demo-frame iframe { display: block; width: 100%; height: 760px; border: 0; }
+
+  /* Chat simulation */
+  .chat-row { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+  @media (min-width: 900px) { .chat-row { grid-template-columns: minmax(0, 1fr) 420px; } }
+  .chat-notes { display: grid; gap: 16px; align-content: start; }
+  .chat-notes ol { margin: 0; padding-left: 1.2em; display: grid; gap: 10px; color: var(--ink-soft); }
+  .chat-notes strong { color: var(--ink); }
+  .chat { border-radius: 16px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 18px 40px rgba(51,53,54,.14); background: #fff; display: flex; flex-direction: column; height: 640px; }
+  .chat-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; background: var(--ink); color: #fff; }
+  .chat-top strong { font-family: var(--display); font-weight: 500; font-size: 1.05rem; }
+  .chat-top span { display: block; font-size: .74rem; color: #cfcac2; }
+  .chat-replay { padding: 7px 12px; border: 1px solid #5a5d5e; border-radius: 999px; background: transparent; color: #fff; font: 600 .78rem/1 var(--body); cursor: pointer; }
+  .chat-replay:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .chat-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--paper); }
+  .msg { max-width: 86%; padding: 10px 13px; border-radius: 14px; font-size: .92rem; line-height: 1.45; animation: pop .25s ease-out; }
+  .msg.user { align-self: flex-end; background: var(--ink); color: #fff; border-bottom-right-radius: 4px; }
+  .msg.bot { align-self: flex-start; background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { padding: 4px 10px; border-radius: 999px; background: var(--gold-wash); color: var(--gold-deep); font-size: .76rem; font-weight: 700; }
+  .choices { align-self: flex-start; display: flex; flex-wrap: wrap; gap: 6px; max-width: 95%; animation: pop .25s ease-out; }
+  .choices button { padding: 9px 13px; border: 1px solid var(--gold); border-radius: 999px; background: #fff; color: var(--ink); font: 600 .84rem/1.1 var(--body); cursor: pointer; }
+  .choices button:hover { background: var(--gold-wash); }
+  .choices button:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .choices button:disabled { cursor: default; opacity: .45; }
+  .choices button.is-picked { opacity: 1; background: var(--gold); border-color: var(--gold); color: #fff; }
+  .result { display: grid; gap: 4px; margin-top: 8px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--paper); }
+  .result b { font-size: .92rem; }
+  .result span { font-size: .8rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .result a { font-size: .8rem; font-weight: 700; color: var(--gold-deep); text-decoration: none; }
+  .typing { align-self: flex-start; display: flex; gap: 4px; padding: 12px 14px; border-radius: 14px; background: #fff; border: 1px solid var(--line); }
+  .typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: blink 1s infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  .chat-input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--line); background: #fff; }
+  .chat-input div { flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 999px; color: #9a9893; font-size: .88rem; }
+  .chat-input span { display: grid; place-items: center; width: 40px; border-radius: 50%; background: var(--gold); color: #fff; font-weight: 700; }
+  @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes blink { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .msg, .choices { animation: none; } .typing i { animation: none; opacity: .7; } }
+
+  /* Recommendation */
+  .rec { background: var(--ink); color: #fff; border-bottom: 0; }
+  .rec .eyebrow { color: var(--gold); }
+  .rec .lede { color: #d9d6d1; }
+  .phases { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); counter-reset: phase; }
+  @media (min-width: 860px) { .phases { grid-template-columns: repeat(3, 1fr); } }
+  .phases li { counter-increment: phase; position: relative; padding: 22px; border: 1px solid #4a4d4e; border-radius: 10px; background: #3b3d3e; display: grid; gap: 8px; align-content: start; }
+  .phases h3 { font-size: 1.15rem; }
+  .phases p { color: #d9d6d1; font-size: .95rem; }
+  .phases .when { font-size: .74rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #bdb7ad; }
+  .wins { display: flex; flex-wrap: wrap; gap: 10px; }
+  .wins span { padding: 10px 16px; border-radius: 999px; background: var(--gold); color: #fff; font-weight: 700; }
+  .rec .fine { color: #bdb7ad; }
+  footer .wrap { padding-block: 22px 32px; font-size: .82rem; color: var(--ink-soft); }
 </style>
 </head>
 <body>
-<div class="note"><div class="wrap"><span>Mock property page · stand-in for a Portside page on healthpeakbayarea.com · sample availability data</span><a href="embed.html?property=portside">Open the embed on its own ↗</a></div></div>
 
-<header class="hero">
+<header class="title">
   <div class="wrap">
-    <p class="eyebrow">Healthpeak Bay Area · South San Francisco</p>
-    <h1>Portside at Oyster Point</h1>
-    <ul class="specs">
-      <li><strong>±950,000 SF</strong> lab and office</li>
-      <li><strong>10</strong> buildings</li>
-      <li><strong>17'</strong> floor-to-floor</li>
-      <li><strong>2.5 / 1,000 SF</strong> parking</li>
-    </ul>
+    <p class="eyebrow">Healthpeak Bay Area · Availability search</p>
+    <h1>Helping prospects find their space</h1>
+    <p class="lede">Options for a chat-style space search on healthpeakbayarea.com, and the availability data that powers it.</p>
   </div>
 </header>
 
-<section class="space" id="available-space">
+<nav class="steps-nav" aria-label="Sections">
   <div class="wrap">
-    <nav class="versions" aria-label="Demo versions">
-      <span>Show:</span>
-      <a href="./" id="v-both">Site plan + 3D &amp; AR</a>
-      <a href="./?views=2d" id="v-2d">Site plan only</a>
-    </nav>
-    <p class="eyebrow">Available space</p>
-    <h2>Find your floor</h2>
-    <p class="lede" id="lede">Gold buildings have space available now. Choose one to see its floors and floor plans, or switch to 3D and place the campus on your desk.</p>
-    <!-- This iframe is the only part that would go on the WordPress page -->
-    <iframe class="frame" id="hp-portside" src="embed.html?property=portside" title="Portside availability: site plan, 3D model and floor plans" allow="xr-spatial-tracking; fullscreen" loading="lazy"></iframe>
-    <p class="frame-label">Above: the embed in an <code>&lt;iframe&gt;</code>, sizing itself to its content.</p>
+    <ol>
+      <li><a href="#options">Options at a glance</a></li>
+      <li><a href="#step-1">1 · Clean data</a></li>
+      <li><a href="#step-2">2 · Using the data</a></li>
+      <li><a href="#step-3">3 · Powering the chat</a></li>
+      <li><a href="#recommendation">Recommendation</a></li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+<!-- Options table -->
+<section id="options">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Options at a glance</p>
+      <h2>Three ways to build the chat search</h2>
+      <p class="lede">The goal: a chat button in the lower right that helps prospects find a matching lab space, using dropdowns or plain-language requests, with optional email capture.</p>
+    </div>
+    <div class="table-scroll">
+      <table class="compare">
+        <thead>
+          <tr><th scope="col"><span class="fine" style="color:#cfcac2">&nbsp;</span></th><th scope="col">AI Engine Pro</th><th scope="col">WPBot Pro</th><th scope="col" class="ours">Custom build (WordPress)</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">What it is</th><td>AI-first toolkit with a chatbot builder</td><td>Rule-based chatbot with AI added</td><td class="ours">A chat-style “find a space” tool built into the site. It reads availability data managed in WordPress, and the same data builds the property-page tables and site plans</td></tr>
+          <tr><th scope="row">Cost, one site</th><td>$69/year, plus $18/year for email add-ons</td><td>$99/year (Professional) to $189/year (Master)</td><td class="ours">No license fee. Built on Advanced Custom Fields (free version)</td></tr>
+          <tr><th scope="row">AI usage</th><td>Billed by AI provider, about $2 to $34 per 1,000 chats by model</td><td>Billed by AI provider, about $2 per 1,000 replies on a small model</td><td class="ours">Not applicable. Requests are read with built-in keyword and synonym matching</td></tr>
+          <tr><th scope="row">Best at</th><td>Typed requests. Can call our own search</td><td>Scripted dropdown and form flows</td><td class="ours">Lab-specific searches: size ranges, vivarium, location, features. Dropdowns, quick-tap buttons and typed requests share one search</td></tr>
+          <tr><th scope="row">Main gap</th><td>Dropdown flow, search and email need custom build</td><td>Spreadsheet filtering unconfirmed. May need Master plan or custom code</td><td class="ours">Can’t read unusual open-ended phrasing; falls back to dropdowns. Needs in-house build time</td></tr>
+          <tr><th scope="row">Track record</th><td>More than 90,000 installs, 4.9 rating</td><td>More than 5,000 installs, 4.7 rating</td><td class="ours">Not applicable. Advanced Custom Fields is one of the most widely used WordPress plugins</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">Plugin pricing as reported on vendor pages, October 2026. Confirm before purchase.</p>
   </div>
 </section>
 
-<section class="install">
+<!-- Step 1 -->
+<section id="step-1">
   <div class="wrap">
-    <div class="code">
-      <h3>Paste into a WordPress Custom HTML block</h3>
-      <button class="copy" id="copy" type="button">Copy</button>
-<pre id="snippet"><code>&lt;iframe id="hp-portside"
-  src="https://healthpeakbayarea.com/availability-embed/?property=portside"
-  title="Portside availability: site plan, 3D model and floor plans"
-  allow="xr-spatial-tracking; fullscreen"
-  loading="lazy"
-  style="width:100%;border:0;height:900px"&gt;&lt;/iframe&gt;
-&lt;script&gt;
-<span class="c">// Let the embed set its own height (no inner scrollbars)</span>
-window.addEventListener('message', function (e) {
-  if (e.origin !== location.origin) return;
-  if (e.data &amp;&amp; e.data.type === 'hp-embed-height') {
-    document.getElementById('hp-portside').style.height = e.data.height + 'px';
-  }
-});
-&lt;/script&gt;</code></pre>
+    <div class="step-head">
+      <span class="step-num" aria-hidden="true">1</span>
+      <h2>Gather clean, accurate data</h2>
+      <p class="lede">Every option starts here. One spreadsheet with all the public, searchable availability information. Today it lives in page text boxes and brochure PDFs.</p>
     </div>
-    <div>
-      <h3>What changes per property</h3>
-      <ol>
-        <li><strong>?property=portside</strong> picks the site plan, 3D model and buildings. Properties without a model just don't show the 3D &amp; AR tab.</li>
-        <li><strong>Gold buildings</strong> come from the data: a building's ON layer in the SVG shows only when it has available floors.</li>
-        <li><strong>Same-site hosting</strong> (the embed living on healthpeakbayarea.com) keeps the height script, AR and analytics simple.</li>
-      </ol>
+    <div class="sheet-scroll" role="region" aria-label="Sample availability spreadsheet" tabindex="0">
+      <table class="sheet">
+        <thead><tr><th>Property</th><th>Building</th><th>Floor / suite</th><th>RSF</th><th>Status</th><th>Condition</th><th>Vivarium</th><th>Floor plan PDF</th><th>Floor plan image</th></tr></thead>
+        <tbody>
+          <tr><td>Portside</td><td>1140 Veterans Blvd</td><td>1st floor</td><td class="num">21,682</td><td><span class="pill avail">Available</span></td><td>Spec suite</td><td>—</td><td>1140_L1.pdf</td><td>1140_L1.png</td></tr>
+          <tr><td>Portside</td><td>1140 Veterans Blvd</td><td>2nd floor</td><td class="num">27,155</td><td><span class="pill avail">Available</span></td><td>Hypothetical plan</td><td>—</td><td>1140_L2.pdf</td><td>1140_L2.png</td></tr>
+          <tr><td>Portside</td><td>331 Oyster Point Blvd</td><td>2nd floor</td><td class="num">33,333</td><td><span class="pill avail">Available</span></td><td>Shell</td><td>—</td><td>331_L2.pdf</td><td>331_L2.png</td></tr>
+          <tr><td>Portside</td><td>1100 Veterans Blvd</td><td>—</td><td class="num">—</td><td><span class="pill leased">Fully leased</span></td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="checklist">
+      <li>Brokers confirm it’s all public</li>
+      <li>One row per available floor or suite</li>
+      <li>Same columns for every property</li>
+      <li>Floor plans saved as PDF and image</li>
+    </ul>
+    <p class="fine">Sample rows from current Portside availability. Columns will be finalized with the brokers.</p>
+  </div>
+</section>
+
+<!-- Step 2 -->
+<section id="step-2">
+  <div class="wrap">
+    <div class="step-head">
+      <span class="step-num" aria-hidden="true">2</span>
+      <h2>How do we use this data?</h2>
+      <p class="lede">Where the data lives decides how much upkeep the site needs every time a space changes.</p>
+    </div>
+    <div class="options">
+      <article class="option">
+        <span class="tag">Option A</span>
+        <h3>Upload the spreadsheet</h3>
+        <p>The spreadsheet is uploaded to WordPress and re-uploaded as availability changes. Property pages are still updated by hand, as today.</p>
+        <ul class="pc">
+          <li class="plus">Fastest to launch</li>
+          <li class="minus">Double the work to maintain: every change is made in the spreadsheet and on the property page</li>
+          <li class="minus">The chat and the property pages can disagree when one gets missed</li>
+        </ul>
+      </article>
+      <article class="option is-b">
+        <span class="tag">Option B</span>
+        <h3>Enter each space once in WordPress</h3>
+        <p>A space is entered once in a WordPress form, with RSF, features, floor plan image and PDF. It then appears everywhere automatically: the chat search, the property-page table, the site plan highlight and the floor plan popup.</p>
+        <ul class="pc">
+          <li class="minus">Takes time to build at the start</li>
+          <li class="plus">Easy to update and maintain once built</li>
+          <li class="plus">Better experience for visitors and better chat results</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="demo">
+      <div class="demo-head">
+        <h3>Option B in action: a Portside property page</h3>
+        <a href="embed.html?property=portside&amp;views=2d" target="_blank" rel="noopener">Open full screen ↗</a>
+      </div>
+      <p class="fine">Working prototype with sample data. Click a gold building, then a floor, to open its floor plan. Gold buildings come straight from the data.</p>
+      <div class="demo-frame">
+        <iframe id="hp-portside" src="embed.html?property=portside&amp;views=2d" title="Portside availability prototype: site plan and floor plans" loading="lazy"></iframe>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- Step 3 -->
+<section id="step-3">
+  <div class="wrap">
+    <div class="step-head">
+      <span class="step-num" aria-hidden="true">3</span>
+      <h2>What powers the chat?</h2>
+      <p class="lede">Both options give visitors the same chat button. The difference is how the request is understood, and what it searches.</p>
+    </div>
+    <div class="options">
+      <article class="option">
+        <span class="tag">Option A</span>
+        <h3>AI chatbot plugin</h3>
+        <p>AI Engine Pro or WPBot Pro, set up to search our availability data.</p>
+        <ul class="pc">
+          <li class="plus">Understands open-ended, conversational requests</li>
+          <li class="plus">Plugin updates maintained by the vendor</li>
+          <li class="minus">Some risk of unexpected or made-up answers unless tightly limited to our data</li>
+          <li class="minus">$70 to $200+ a year in licenses, plus AI usage fees</li>
+          <li class="minus">Needs CBRE approval of the AI vendor and a spending cap</li>
+        </ul>
+      </article>
+      <article class="option is-b">
+        <span class="tag">Option B</span>
+        <h3>Custom build</h3>
+        <p>Custom code running on WordPress, reading the same data as the property pages.</p>
+        <ul class="pc">
+          <li class="plus">Searches the same data that updates the property pages, so results always match</li>
+          <li class="mixed">Reads key words and answers only from the data: always factual, but less conversational</li>
+          <li class="minus">In-house maintenance may be needed down the line</li>
+          <li class="plus">Free: no license or AI usage fees</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="chat-row">
+      <div class="chat-notes">
+        <h3>What a visitor would see</h3>
+        <p class="fine">A simulated chat using the sample Portside data. Either option can work this way.</p>
+        <ol>
+          <li><strong>They ask in their own words.</strong> The search pulls out size, use and timing, shown as tags they can see.</li>
+          <li><strong>If something’s unclear, it asks.</strong> One quick choice instead of a wrong guess. Try both answers.</li>
+          <li><strong>Results come only from the data,</strong> with the floor plan one tap away and a hand-off to the leasing team.</li>
+        </ol>
+      </div>
+      <div class="chat" aria-label="Simulated chat">
+        <div class="chat-top">
+          <div><strong>Find your space</strong><span>Healthpeak Bay Area</span></div>
+          <button class="chat-replay" id="replay" type="button">Replay</button>
+        </div>
+        <div class="chat-log" id="log" aria-live="polite"></div>
+        <div class="chat-input" aria-hidden="true"><div>Describe the space you need…</div><span>↑</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Recommendation -->
+<section id="recommendation" class="rec">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow">Recommendation</p>
+      <h2>Launch the chat now, build the foundation alongside it</h2>
+      <p class="lede">Start with an AI chatbot on the spreadsheet so visitors get the chat experience soon. In the background, set up the WordPress data so both work together, and we get the best of both.</p>
+    </div>
+    <ol class="phases">
+      <li>
+        <span class="when">Now</span>
+        <h3>Gather the data</h3>
+        <p>Compile the clean availability spreadsheet from the site and brochures, with the brokers.</p>
+      </li>
+      <li>
+        <span class="when">When the data is ready</span>
+        <h3>Launch the AI chatbot</h3>
+        <p>Purchase the plugin and point it at the spreadsheet. Visitors get the chat experience right away.</p>
+      </li>
+      <li>
+        <span class="when">In the background</span>
+        <h3>Build the WordPress data</h3>
+        <p>Set up the custom fields and property-page embeds. Then switch the chatbot to read the same data, and the spreadsheet retires.</p>
+      </li>
+    </ol>
+    <div class="wins" aria-label="What we get"><span>Clean data</span><span>Easier maintenance</span><span>Smart chat</span></div>
+    <p class="fine">Before the chatbot launches: CBRE approval of the AI vendor, a privacy notice for email capture, a monthly spending cap, and accessibility testing.</p>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">Prepared by CBRE for Healthpeak · Prototype uses sample data · <a href="property-demo.html" style="color:inherit">Full property page demo</a></div></footer>
 
 <script>
-  // Demo version switch: ?views=2d passes through to the embed
-  (function () {
-    var only2d = new URLSearchParams(location.search).get('views') === '2d';
-    var frame = document.getElementById('hp-portside');
-    if (only2d) {
-      frame.src = 'embed.html?property=portside&views=2d';
-      document.getElementById('lede').textContent = 'Gold buildings have space available now. Choose one to see its floors and floor plans.';
-      document.querySelector('.note a').href = 'embed.html?property=portside&views=2d';
-      var snip = document.getElementById('snippet').querySelector('code');
-      snip.innerHTML = snip.innerHTML.replace('?property=portside"', '?property=portside&amp;views=2d"');
+// ---- Simulated chat --------------------------------------------------------------------------
+(function () {
+  var log = document.getElementById('log');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var timers = [];
+  function later(fn, ms) { timers.push(setTimeout(fn, reduce ? 0 : ms)); }
+  function scroll() { log.scrollTop = log.scrollHeight; }
+  function add(html, who) { var d = document.createElement('div'); d.className = 'msg ' + who; d.innerHTML = html; log.appendChild(d); scroll(); return d; }
+  function typing(ms, then) {
+    var t = document.createElement('div'); t.className = 'typing'; t.innerHTML = '<i></i><i></i><i></i>'; log.appendChild(t); scroll();
+    later(function () { t.remove(); then(); }, ms);
+  }
+  function result(name, line, plan) {
+    return '<div class="result"><b>' + name + '</b><span>' + line + '</span><a href="embed.html?property=portside&views=2d" target="_blank" rel="noopener">View floor plan ↗</a></div>';
+  }
+  var ANSWERS = {
+    ready: function () {
+      add('Move-in ready', 'user');
+      typing(900, function () {
+        add('Here’s the best match at Portside:' +
+          result('1140 Veterans Blvd · 1st floor', '±21,682 RSF · Spec suite, move-in ready') +
+          '<div class="chips"><span class="chip">Lab</span><span class="chip">20–30k RSF</span><span class="chip">Move-in ready</span></div>', 'bot');
+        later(handoff, 700);
+      });
+    },
+    either: function () {
+      add('Either is fine', 'user');
+      typing(900, function () {
+        add('I found 3 spaces between 20,000 and 30,000 RSF at Portside:' +
+          result('1140 Veterans Blvd · 1st floor', '±21,682 RSF · Spec suite') +
+          result('1140 Veterans Blvd · 2nd floor', '±27,155 RSF · Hypothetical plan') +
+          result('1140 Veterans Blvd · 3rd floor', '±26,953 RSF · Hypothetical plan'), 'bot');
+        later(handoff, 700);
+      });
     }
-    document.getElementById(only2d ? 'v-2d' : 'v-both').setAttribute('aria-current', 'page');
-  })();
+  };
+  function handoff() {
+    add('Want me to connect you with the leasing team about these?', 'bot');
+    var c = document.createElement('div'); c.className = 'choices';
+    c.innerHTML = '<button type="button">Contact the leasing team</button><button type="button">Start a new search</button>';
+    c.querySelectorAll('button')[1].addEventListener('click', start);
+    log.appendChild(c); scroll();
+  }
+  function start() {
+    timers.forEach(clearTimeout); timers = []; log.innerHTML = '';
+    add('Hi! Tell me what kind of space you’re looking for, or pick a quick option below.', 'bot');
+    later(function () { add('We need about 25,000 SF of lab space, ideally ready soon', 'user'); }, 900);
+    later(function () {
+      typing(1000, function () {
+        add('Got it: lab space around 25,000 RSF.<div class="chips"><span class="chip">Lab</span><span class="chip">20–30k RSF</span></div>', 'bot');
+        later(function () {
+          add('Do you need it move-in ready, or are you open to building out a shell or planned space?', 'bot');
+          var c = document.createElement('div'); c.className = 'choices';
+          c.innerHTML = '<button type="button" data-a="ready">Move-in ready</button><button type="button" data-a="either">Either is fine</button>';
+          c.querySelectorAll('button').forEach(function (b) {
+            b.addEventListener('click', function () {
+              c.querySelectorAll('button').forEach(function (x) { x.disabled = true; });
+              b.classList.add('is-picked'); ANSWERS[b.dataset.a]();
+            });
+          });
+          log.appendChild(c); scroll();
+        }, 600);
+      });
+    }, 1700);
+  }
+  document.getElementById('replay').addEventListener('click', start);
+  // Start when the chat scrolls into view
+  var chat = document.querySelector('.chat'), begun = false;
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { if (!begun && es[0].isIntersecting) { begun = true; start(); } }, { threshold: .4 }).observe(chat);
+  } else start();
+  // Show the first message right away so the chat is never empty
+  add('Hi! Tell me what kind of space you’re looking for, or pick a quick option below.', 'bot');
+})();
 
-  // Host side of the auto-height handshake (same script as the snippet)
-  window.addEventListener('message', function (e) {
-    if (e.origin !== location.origin) return;
-    if (e.data && e.data.type === 'hp-embed-height') document.getElementById('hp-portside').style.height = e.data.height + 'px';
-  });
-  document.getElementById('copy').addEventListener('click', function () {
-    var text = document.getElementById('snippet').innerText, btn = this;
-    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () {
-      btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
-    }).catch(function () { var r = document.createRange(); r.selectNodeContents(document.getElementById('snippet')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); });
-  });
+// ---- Embed auto-height and step nav highlight ------------------------------------------------
+window.addEventListener('message', function (e) {
+  if (e.origin !== location.origin) return;
+  if (e.data && e.data.type === 'hp-embed-height') document.getElementById('hp-portside').style.height = e.data.height + 'px';
+});
+(function () {
+  var links = document.querySelectorAll('.steps-nav a');
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) links.forEach(function (a) { a.classList.toggle('is-here', a.getAttribute('href') === '#' + e.target.id); });
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  document.querySelectorAll('main section').forEach(function (s) { io.observe(s); });
+})();
 </script>
 </body>
 </html>

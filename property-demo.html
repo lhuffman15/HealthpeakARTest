@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portside Embed Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+  /* Layout: a stand-in property page (hero band, Available Space section holding the iframe), then the
+     install notes. Brand tokens match the embed. */
+  :root {
+    --gold: #a39068; --gold-deep: #85744f; --ink: #333536; --ink-soft: #5d6061;
+    --cream: #f0ece6; --paper: #faf8f5; --line: #d9d2c6;
+    --display: "freight-neo-pro", "Figtree", "Helvetica Neue", Arial, sans-serif;
+    --body: "avenir-next-lt-pro", "Avenir Next", "Nunito Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { background: #fff; }
+  body { margin: 0; background: #fff; color: var(--ink); font: 16px/1.55 var(--body); }
+  .wrap { max-width: 1180px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .note { background: var(--ink); color: #e9e6e1; font-size: .8rem; letter-spacing: .04em; }
+  .note .wrap { padding-block: 10px; display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; }
+  .note a { color: #fff; }
+  .versions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 26px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); font-size: .86rem; color: var(--ink-soft); }
+  .versions a { padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font-weight: 600; text-decoration: none; }
+  .versions a[aria-current="page"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .versions a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .hero { background: var(--cream); border-bottom: 1px solid var(--line); }
+  .hero .wrap { padding-block: 44px 40px; }
+  .eyebrow { margin: 0 0 8px; font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-deep); }
+  h1 { margin: 0; font: 500 clamp(2rem, 1.4rem + 2.6vw, 3.2rem)/1.05 var(--display); text-wrap: balance; }
+  .specs { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: .92rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .specs strong { color: var(--ink); font-weight: 600; }
+  section.space .wrap { padding-block: 44px 28px; }
+  h2 { margin: 0 0 6px; font: 500 clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem)/1.15 var(--display); }
+  .lede { margin: 0 0 22px; max-width: 62ch; color: var(--ink-soft); }
+  .frame { width: 100%; border: 0; display: block; height: 900px; }
+  .frame-label { margin: 10px 0 0; font-size: .78rem; color: var(--ink-soft); }
+  .frame-label code { font-family: var(--mono); font-size: .76rem; }
+  .install { background: var(--paper); border-top: 1px solid var(--line); }
+  .install .wrap { padding-block: 40px 56px; display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 900px) { .install .wrap { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); } }
+  .install h3 { margin: 0 0 10px; font: 500 1.25rem/1.2 var(--display); }
+  .code h3 { padding-right: 84px; }
+  .code { position: relative; min-width: 0; }
+  pre { margin: 0; padding: 18px; border-radius: 6px; background: #2a2c2d; color: #ece8e1; font: .78rem/1.6 var(--mono); overflow-x: auto; }
+  pre .c { color: #a8a39a; }
+  .copy { position: absolute; top: 10px; right: 10px; padding: 7px 12px; border: 1px solid #55595a; border-radius: 999px; background: #333536; color: #fff; font: 600 .75rem/1 var(--body); cursor: pointer; }
+  .copy:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  ol { margin: 0; padding-left: 1.2em; display: grid; gap: 10px; color: var(--ink-soft); font-size: .94rem; }
+  ol strong { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="note"><div class="wrap"><span>Mock property page · stand-in for a Portside page on healthpeakbayarea.com · sample availability data</span><a href="embed.html?property=portside">Open the embed on its own ↗</a></div></div>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Healthpeak Bay Area · South San Francisco</p>
+    <h1>Portside at Oyster Point</h1>
+    <ul class="specs">
+      <li><strong>±950,000 SF</strong> lab and office</li>
+      <li><strong>10</strong> buildings</li>
+      <li><strong>17'</strong> floor-to-floor</li>
+      <li><strong>2.5 / 1,000 SF</strong> parking</li>
+    </ul>
+  </div>
+</header>
+
+<section class="space" id="available-space">
+  <div class="wrap">
+    <nav class="versions" aria-label="Demo versions">
+      <span>Show:</span>
+      <a href="property-demo.html" id="v-both">Site plan + 3D &amp; AR</a>
+      <a href="property-demo.html?views=2d" id="v-2d">Site plan only</a>
+    </nav>
+    <p class="eyebrow">Available space</p>
+    <h2>Find your floor</h2>
+    <p class="lede" id="lede">Gold buildings have space available now. Choose one to see its floors and floor plans, or switch to 3D and place the campus on your desk.</p>
+    <!-- This iframe is the only part that would go on the WordPress page -->
+    <iframe class="frame" id="hp-portside" src="embed.html?property=portside" title="Portside availability: site plan, 3D model and floor plans" allow="xr-spatial-tracking; fullscreen" loading="lazy"></iframe>
+    <p class="frame-label">Above: the embed in an <code>&lt;iframe&gt;</code>, sizing itself to its content.</p>
+  </div>
+</section>
+
+<section class="install">
+  <div class="wrap">
+    <div class="code">
+      <h3>Paste into a WordPress Custom HTML block</h3>
+      <button class="copy" id="copy" type="button">Copy</button>
+<pre id="snippet"><code>&lt;iframe id="hp-portside"
+  src="https://healthpeakbayarea.com/availability-embed/?property=portside"
+  title="Portside availability: site plan, 3D model and floor plans"
+  allow="xr-spatial-tracking; fullscreen"
+  loading="lazy"
+  style="width:100%;border:0;height:900px"&gt;&lt;/iframe&gt;
+&lt;script&gt;
+<span class="c">// Let the embed set its own height (no inner scrollbars)</span>
+window.addEventListener('message', function (e) {
+  if (e.origin !== location.origin) return;
+  if (e.data &amp;&amp; e.data.type === 'hp-embed-height') {
+    document.getElementById('hp-portside').style.height = e.data.height + 'px';
+  }
+});
+&lt;/script&gt;</code></pre>
+    </div>
+    <div>
+      <h3>What changes per property</h3>
+      <ol>
+        <li><strong>?property=portside</strong> picks the site plan, 3D model and buildings. Properties without a model just don't show the 3D &amp; AR tab.</li>
+        <li><strong>Gold buildings</strong> come from the data: a building's ON layer in the SVG shows only when it has available floors.</li>
+        <li><strong>Same-site hosting</strong> (the embed living on healthpeakbayarea.com) keeps the height script, AR and analytics simple.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Demo version switch: ?views=2d passes through to the embed
+  (function () {
+    var only2d = new URLSearchParams(location.search).get('views') === '2d';
+    var frame = document.getElementById('hp-portside');
+    if (only2d) {
+      frame.src = 'embed.html?property=portside&views=2d';
+      document.getElementById('lede').textContent = 'Gold buildings have space available now. Choose one to see its floors and floor plans.';
+      document.querySelector('.note a').href = 'embed.html?property=portside&views=2d';
+      var snip = document.getElementById('snippet').querySelector('code');
+      snip.innerHTML = snip.innerHTML.replace('?property=portside"', '?property=portside&amp;views=2d"');
+    }
+    document.getElementById(only2d ? 'v-2d' : 'v-both').setAttribute('aria-current', 'page');
+  })();
+
+  // Host side of the auto-height handshake (same script as the snippet)
+  window.addEventListener('message', function (e) {
+    if (e.origin !== location.origin) return;
+    if (e.data && e.data.type === 'hp-embed-height') document.getElementById('hp-portside').style.height = e.data.height + 'px';
+  });
+  document.getElementById('copy').addEventListener('click', function () {
+    var text = document.getElementById('snippet').innerText, btn = this;
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () {
+      btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+    }).catch(function () { var r = document.createRange(); r.selectNodeContents(document.getElementById('snippet')); var s = getSelection(); s.removeAllRanges(); s.addRange(r); });
+  });
+</script>
+</body>
+</html>
