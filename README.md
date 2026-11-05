@@ -8,4 +8,8 @@ Test site for the Healthpeak Portside "View in your space" AR pilot.
 - `models/portside-campus-anchors.json` — where each building's label sits.
 - `tools/regroup.mjs` — rebuilds the grouped model from a new Spline export.
 
-On iPhone, the AR model is generated from the page with the gold colours applied.
+Inside Android AR (Chrome), tapping a gold label or gold floor opens a floor plan card. It shows the plan image from `floor_plan_image` in the data (PNG/JPG in `plans/`) and an Open PDF button.
+
+On iPhone, AR uses `models/portside-campus.usdz`, made with the gold colours from the sample data. Re-export it when the data changes (the WordPress version will do this differently).
+
+In iPhone AR, a "See floor plans" banner at the bottom brings people back to the page with the availability list open.

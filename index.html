@@ -95,6 +95,31 @@
   .hp-ar__steps li::before { content: counter(step); font: 500 1.1rem/1 var(--hp-display); color: var(--hp-gold-deep); border-bottom: 1px solid var(--hp-gold); padding-bottom: 4px; text-align: center; }
   .hp-ar__steps strong { color: var(--hp-ink); font-weight: 600; }
 
+  /* AR floor plan card (inside model-viewer so it shows over the camera in Android AR) */
+  .hp-xr { position: absolute; left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(12px + env(safe-area-inset-bottom, 0px)); max-width: 460px; margin-inline: auto; padding: 14px; border-radius: 10px; background: rgba(250, 248, 245, .97); color: var(--hp-ink); font-family: var(--hp-body); box-shadow: 0 10px 30px rgba(0,0,0,.35); display: grid; gap: 10px; max-height: 72%; overflow: auto; }
+  .hp-xr[hidden] { display: none; }
+  model-viewer.xr-open .hp-ar__pin { visibility: hidden; }
+  .hp-xr__head { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+  .hp-xr__eyebrow { margin: 0 0 2px; font-size: .68rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--hp-gold-deep); }
+  .hp-xr__name { margin: 0; font: 500 1.15rem/1.2 var(--hp-display); }
+  .hp-xr__close { flex: none; width: 40px; height: 40px; border: 1px solid var(--hp-line); border-radius: 50%; background: #fff; color: var(--hp-ink); font-size: 1.2rem; }
+  .hp-xr__tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .hp-xr__tabs button { min-height: 40px; padding: 8px 14px; border: 1px solid var(--hp-line); border-radius: 999px; background: #fff; color: var(--hp-ink); font: 600 .85rem/1 var(--hp-body); }
+  .hp-xr__tabs button[aria-selected="true"] { background: var(--hp-gold); border-color: var(--hp-gold); color: #fff; }
+  .hp-xr__plan { margin: 0; border: 1px solid var(--hp-line); border-radius: 6px; background: #fff; display: grid; place-items: center; min-height: 120px; overflow: hidden; }
+  .hp-xr__plan img { display: block; width: 100%; height: auto; max-height: 38vh; object-fit: contain; }
+  .hp-xr__plan p { margin: 0; padding: 16px; text-align: center; font-size: .85rem; color: var(--hp-ink-soft); }
+  .hp-xr__foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .hp-xr__meta { margin: 0; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  .hp-xr__meta small { display: block; color: var(--hp-ink-soft); font-size: .76rem; }
+  .hp-xr__pdf { flex: none; padding: 11px 16px; border-radius: 999px; background: var(--hp-ink); color: #fff; font: 600 .85rem/1 var(--hp-body); text-decoration: none; }
+  .hp-xr__pdf[hidden] { display: none; }
+  .hp-xr__hint { position: absolute; left: 50%; top: calc(16px + env(safe-area-inset-top, 0px)); transform: translateX(-50%); margin: 0; padding: 8px 14px; border-radius: 999px; background: rgba(51,53,54,.85); color: #fff; font: 600 .8rem/1.2 var(--hp-body); white-space: nowrap; }
+  .hp-xr__hint[hidden] { display: none; }
+  .hp-ar__avail.is-flash { animation: hp-flash 1.6s ease-out; }
+  @keyframes hp-flash { 0% { box-shadow: 0 0 0 4px var(--hp-gold); border-radius: 6px; } 100% { box-shadow: 0 0 0 0 transparent; } }
+  @media (prefers-reduced-motion: reduce) { .hp-ar__avail.is-flash { animation: none; } }
+
   /* Test-page chrome only */
   html { background: #faf8f5; }
   body { margin: 0; background: #faf8f5; color: #333536; font: 14px/1.4 system-ui, sans-serif; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 40px; }
@@ -115,6 +140,7 @@
     <div class="hp-ar__stage" id="hp-ar-stage">
       <model-viewer id="hp-ar-model"
         src="models/portside-campus.glb"
+        ios-src="models/portside-campus.usdz"
         alt="3D model of the Portside campus with buildings that have available space shown in gold"
         ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor" ar-scale="auto"
         camera-controls touch-action="pan-y"
@@ -126,6 +152,23 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2l-8 4.6-8-4.6V7.4z"/><path d="M4 7.4l8 4.6 8-4.6M12 12v9.2"/></svg>
           View on your desk
         </button>
+        <!-- Floor plan card shown inside Android AR (WebXR keeps this page running over the camera) -->
+        <div class="hp-xr" id="hp-xr" hidden>
+          <div class="hp-xr__head">
+            <div>
+              <p class="hp-xr__eyebrow" id="hp-xr-eyebrow">Available</p>
+              <h3 class="hp-xr__name" id="hp-xr-name"></h3>
+            </div>
+            <button class="hp-xr__close" id="hp-xr-close" type="button" aria-label="Close floor plan">×</button>
+          </div>
+          <div class="hp-xr__tabs" id="hp-xr-tabs" role="tablist" aria-label="Available floors"></div>
+          <figure class="hp-xr__plan" id="hp-xr-plan"></figure>
+          <div class="hp-xr__foot">
+            <p class="hp-xr__meta" id="hp-xr-meta"></p>
+            <a class="hp-xr__pdf" id="hp-xr-pdf" target="_blank" rel="noopener">Open PDF ↗</a>
+          </div>
+        </div>
+        <p class="hp-xr__hint" id="hp-xr-hint" hidden>Tap a gold label or a gold floor for its floor plan</p>
       </model-viewer>
       <div class="hp-ar__legend" aria-hidden="true"><span><i></i>Available</span><span><i class="leased"></i>Leased</span></div>
       <span class="hp-ar__scale">Lands about 60 × 40 cm · 24 × 16 in</span>
@@ -201,7 +244,7 @@
     j.availability.forEach(function (a) {
       var f = a.acf, b = byId[f.building];
       if (!b || f.status !== 'Available') return;
-      b.spaces.push({ floor: +f.floor, suite: f.suite, rsf: +f.rsf, type: f.plan_type || '', pdf: f.floor_plan_pdf || '' });
+      b.spaces.push({ floor: +f.floor, suite: f.suite, rsf: +f.rsf, type: f.plan_type || '', pdf: f.floor_plan_pdf || '', image: f.floor_plan_image || '' });
       b.total += +f.rsf;
     });
     return Object.keys(byId).map(function (k) { var b = byId[k]; b.spaces.sort(function (x, y) { return x.floor - y.floor; }); return b; });
@@ -265,11 +308,13 @@
       pin.setAttribute('aria-pressed', 'false');
       pin.textContent = b.name.replace(' Blvd', '') + ' · ' + fmt(b.total);
       pin.addEventListener('click', function (e) { e.stopPropagation(); select(b, null); });
+      pin.addEventListener('beforexrselect', function (e) { e.preventDefault(); }); // a tap on the label shouldn't move the model in AR
       mv.appendChild(pin);
     });
   }
 
   function select(b, floor) {
+    if (inXR) { picked = b; pickedFloor = floor; paint(); showXR(b, floor); return; }
     picked = b; pickedFloor = floor;
     mv.removeAttribute('auto-rotate');
     paint();
@@ -331,6 +376,69 @@
   });
   mv.addEventListener('camera-change', function (e) { if (e.detail.source === 'user-interaction') mv.removeAttribute('auto-rotate'); });
 
+  // ---- Inside AR -----------------------------------------------------------------------------
+  // Android (WebXR): this page keeps running over the camera, so taps open a floor plan card.
+  var inXR = false;
+  var xr = document.getElementById('hp-xr'), xrHint = document.getElementById('hp-xr-hint');
+  xr.addEventListener('beforexrselect', function (e) { e.preventDefault(); });
+  function showXR(b, floor) {
+    var start = b.spaces.filter(function (s) { return s.floor === floor; })[0] || b.spaces[0];
+    document.getElementById('hp-xr-name').textContent = b.name;
+    document.getElementById('hp-xr-eyebrow').textContent = fmt(b.total) + ' RSF available';
+    var tabs = document.getElementById('hp-xr-tabs'); tabs.innerHTML = '';
+    b.spaces.forEach(function (s) {
+      var t = document.createElement('button');
+      t.type = 'button'; t.setAttribute('role', 'tab'); t.textContent = ordinal(s.floor) + ' floor';
+      t.addEventListener('click', function () { showFloor(b, s); });
+      t.dataset.floor = s.floor; tabs.appendChild(t);
+    });
+    showFloor(b, start);
+    xr.hidden = false; xrHint.hidden = true; mv.classList.add('xr-open');
+  }
+  function showFloor(b, s) {
+    pickedFloor = s.floor; paint();
+    document.querySelectorAll('#hp-xr-tabs button').forEach(function (t) { t.setAttribute('aria-selected', String(+t.dataset.floor === s.floor)); });
+    var fig = document.getElementById('hp-xr-plan'); fig.innerHTML = '';
+    if (s.image) {
+      var img = new Image(); img.src = s.image; img.alt = b.name + ', ' + ordinal(s.floor) + ' floor plan'; fig.appendChild(img);
+    } else {
+      var p = document.createElement('p'); p.textContent = 'Floor plan preview not added yet. Open the PDF to see it.'; fig.appendChild(p);
+    }
+    var meta = document.getElementById('hp-xr-meta');
+    meta.textContent = fmt(s.rsf) + ' RSF';
+    if (s.type) { var sm = document.createElement('small'); sm.textContent = ordinal(s.floor) + ' floor · ' + s.type; meta.appendChild(sm); }
+    var pdf = document.getElementById('hp-xr-pdf');
+    if (s.pdf) { pdf.href = s.pdf; pdf.hidden = false; } else pdf.hidden = true;
+    if (window.gtag) window.gtag('event', 'ar_floor_plan', { building: b.name, floor: s.floor });
+  }
+  function closeXR() { xr.hidden = true; mv.classList.remove('xr-open'); xrHint.hidden = !inXR; picked = null; pickedFloor = null; paint(); }
+  document.getElementById('hp-xr-close').addEventListener('click', closeXR);
+  mv.addEventListener('ar-status', function (e) {
+    var s = e.detail.status;
+    if (s === 'session-started') { inXR = true; closeXR(); xrHint.hidden = false; setTimeout(function () { xrHint.hidden = true; }, 6000); }
+    if (s === 'not-presenting' || s === 'failed') { inXR = false; xr.hidden = true; mv.classList.remove('xr-open'); xrHint.hidden = true; }
+  });
+
+  // iPhone (Quick Look): no page code runs in AR, so add one banner button that brings people back
+  // to the availability list. Apple reads these settings from the end of the USDZ link.
+  function setQuickLookBanner() {
+    var avail = buildings.filter(function (b) { return b.total; });
+    if (!avail.length) return;
+    var total = avail.reduce(function (t, b) { return t + b.total; }, 0);
+    var frag = '#callToAction=' + encodeURIComponent('See floor plans') +
+      '&checkoutTitle=' + encodeURIComponent('Portside · ' + avail.length + (avail.length === 1 ? ' building' : ' buildings') + ' with space') +
+      '&checkoutSubtitle=' + encodeURIComponent(fmt(total) + ' RSF available now');
+    mv.setAttribute('ios-src', mv.getAttribute('ios-src').split('#')[0] + frag);
+  }
+  mv.addEventListener('quick-look-button-tapped', function () {
+    var box = document.querySelector('.hp-ar__avail');
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    box.classList.remove('is-flash'); void box.offsetWidth; box.classList.add('is-flash');
+    var first = buildings.filter(function (b) { return b.total; }).sort(function (x, y) { return y.total - x.total; })[0];
+    if (first) select(first, null);
+    if (window.gtag) window.gtag('event', 'ar_quicklook_banner', { model: 'portside' });
+  });
+
   // AR availability → button or QR
   function arState() { var can = !!mv.canActivateAR; stage.classList.toggle('can-ar', can); root.classList.toggle('no-ar', !can); }
   customElements.whenDefined('model-viewer').then(arState);
@@ -347,7 +455,7 @@
     .then(function (r) {
       buildings = r[0]; anchors = r[1];
       buildings.forEach(function (b) { byModel[b.modelId] = b; });
-      renderList(); addPins();
+      renderList(); addPins(); setQuickLookBanner();
       return modelReady.then(function () { arState(); paint(); });
     })
     .catch(function () {
