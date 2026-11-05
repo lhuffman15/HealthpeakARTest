@@ -23,6 +23,8 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #fff; color: var(--hp-ink); font-family: var(--hp-body); }
   body { padding: 0; }
+  html.is-standalone body { padding: 60px; }
+  @media (max-width: 600px) { html.is-standalone body { padding: 20px; } }
   .hp-av { display: grid; gap: 16px; }
   .hp-eyebrow { margin: 0 0 6px; font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--hp-gold-deep); }
 
@@ -47,14 +49,15 @@
   /* Site plan view */
   .hp-plan2d { position: relative; aspect-ratio: 1224 / 792; }
   .hp-plan2d svg { display: block; width: 100%; height: 100%; }
-  .hp-plan2d .is-on { cursor: pointer; transition: opacity .2s ease, filter .15s ease; outline: none; }
+  .hp-plan2d .is-on { cursor: pointer; transition: filter .15s ease; outline: none; }
+  .hp-plan2d .is-on > g[filter] > * { transition: fill .2s ease; }
   .hp-plan2d .is-on:hover, .hp-plan2d .is-on:focus-visible { filter: brightness(1.1); }
   /* Selected building: dark outline around its footprint (the shapes inside the drop-shadow groups) */
-  .hp-plan2d .is-on.is-picked > g[filter] > * { stroke: #333536; stroke-width: 4px; stroke-linejoin: round; paint-order: stroke; }
-  .hp-plan2d .is-on:focus-visible > g[filter] > * { stroke: #333536; stroke-width: 3px; stroke-dasharray: 6 4; paint-order: stroke; }
+  .hp-plan2d .is-on.is-picked > g[filter] > * { stroke: #333536; stroke-width: 1.5px; stroke-linejoin: round; paint-order: stroke; }
+  .hp-plan2d .is-on:focus-visible > g[filter] > * { stroke: #333536; stroke-width: 1.5px; stroke-dasharray: 5 3; paint-order: stroke; }
   /* While one is selected, the other gold buildings step back */
-  .hp-plan2d.has-pick .is-on:not(.is-picked) { opacity: .45; }
-  .hp-plan2d.has-pick .is-on:not(.is-picked):hover { opacity: .8; }
+  .hp-plan2d.has-pick .is-on:not(.is-picked) > g[filter] > * { fill: #c9a85f; }
+  .hp-plan2d.has-pick .is-on:not(.is-picked):hover > g[filter] > * { fill: #b58a2d; }
   .hp-plan2d__status { position: absolute; inset: 0; display: grid; place-items: center; color: var(--hp-ink-soft); font-size: .9rem; }
   .hp-go3d { position: absolute; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border: 0; border-radius: 999px; background: var(--hp-ink); color: #fff; font: 600 .86rem/1 var(--hp-body); cursor: pointer; box-shadow: 0 6px 16px rgba(51,53,54,.25); }
   .hp-go3d svg { width: 18px; height: 18px; color: var(--hp-gold); }
@@ -123,6 +126,8 @@
   .hp-floors td:last-child, .hp-floors th:last-child { text-align: right; }
   .hp-floors small { display: block; color: var(--hp-ink-soft); font-size: .78rem; }
   .hp-floors tr.is-picked td { background: #f4efe4; }
+  .hp-floors tbody tr.has-plan { cursor: pointer; }
+  .hp-floors tbody tr.has-plan:hover td { background: #f7f3eb; }
   .hp-view { padding: 0; border: 0; background: none; color: var(--hp-gold-deep); font-family: inherit; font-weight: 600; font-size: .88rem; cursor: pointer; }
   .hp-view:hover { text-decoration: underline; }
   .hp-view:focus-visible { outline: 3px solid var(--hp-gold); outline-offset: 2px; }
@@ -136,15 +141,15 @@
   .hp-tip { margin: 0; font-size: .86rem; color: var(--hp-ink-soft); }
 
   /* Floor plan popup */
-  .hp-plan { width: min(960px, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 22px; border: 0; border-radius: 8px; background: #fff; color: var(--hp-ink); font-family: var(--hp-body); box-shadow: 0 24px 60px rgba(0,0,0,.3); }
-  .hp-plan[open] { display: grid; gap: 14px; }
-  .hp-plan::backdrop { background: rgba(51, 53, 54, .55); }
+  .hp-plan { width: min(1040px, calc(100vw - 32px)); height: calc(100vh - 32px); max-height: calc(100vh - 32px); padding: 22px; border: 0; border-radius: 8px; background: #fff; color: var(--hp-ink); font-family: var(--hp-body); box-shadow: 0 24px 60px rgba(0,0,0,.3); }
+  .hp-plan[open] { display: flex; flex-direction: column; gap: 14px; }
+  .hp-plan::backdrop { background: rgba(255, 255, 255, .3); }
   .hp-plan__head { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
   .hp-plan__title { margin: 0; font: 500 1.4rem/1.15 var(--hp-display); }
   .hp-plan__close { flex: none; width: 40px; height: 40px; border: 1px solid var(--hp-line); border-radius: 50%; background: #fff; color: var(--hp-ink); font-size: 1.25rem; cursor: pointer; }
-  .hp-plan__fig { margin: 0; min-height: 260px; display: grid; place-items: center; border: 1px solid var(--hp-line); border-radius: 6px; background: var(--hp-paper); overflow: auto; }
-  .hp-plan__fig img { display: block; max-width: 100%; max-height: calc(100vh - 260px); object-fit: contain; }
-  .hp-plan__fig object { display: block; width: 100%; height: min(62vh, 640px); border: 0; }
+  .hp-plan__fig { margin: 0; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; border: 1px solid var(--hp-line); border-radius: 6px; background: var(--hp-paper); overflow: hidden; }
+  .hp-plan__fig img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .hp-plan__fig object { display: block; width: 100%; height: 100%; border: 0; }
   .hp-plan__fig p { margin: 0; padding: 24px; max-width: 42ch; text-align: center; color: var(--hp-ink-soft); line-height: 1.5; }
   .hp-plan__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; }
   .hp-plan__nav { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -262,6 +267,7 @@
   };
   var SOURCE = { combined: 'data/availability.json' };
   var MODEL_VIEWER = 'https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js';
+  if (window.top === window) document.documentElement.classList.add('is-standalone');
   var params = new URLSearchParams(location.search);
   var PROP = PROPERTIES[params.get('property') || 'portside'];
   // Leased buildings: warm greys, alternating by floor so the floor lines read; roofs a touch darker.
@@ -325,6 +331,7 @@
     var tb = $('detail-rows'); tb.innerHTML = '';
     b.spaces.forEach(function (s) {
       var tr = document.createElement('tr'); if (floor === s.floor) tr.className = 'is-picked';
+      if (s.image || s.pdf) { tr.classList.add('has-plan'); tr.addEventListener('click', function (e) { if (!e.target.closest('button, a')) openPlan(b, s); }); }
       tr.innerHTML = '<td></td><td></td><td></td>';
       tr.children[0].textContent = ordinal(s.floor) + ' floor';
       if (s.type) { var sm = document.createElement('small'); sm.textContent = s.type; tr.children[0].appendChild(sm); }
@@ -545,7 +552,7 @@
       var img = new Image(); img.src = s.image; img.alt = b.name + ' ' + ordinal(s.floor) + ' floor plan'; fig.appendChild(img);
     } else if (s.pdf) {
       // Placeholder until PNGs exist: show the PDF itself where the browser can.
-      var obj = document.createElement('object'); obj.type = 'application/pdf'; obj.data = s.pdf + '#view=FitH&toolbar=0';
+      var obj = document.createElement('object'); obj.type = 'application/pdf'; obj.data = s.pdf + '#view=Fit&toolbar=0&navpanes=0';
       obj.setAttribute('aria-label', b.name + ' ' + ordinal(s.floor) + ' floor plan');
       var fb = document.createElement('p'); fb.textContent = 'This browser can’t show the PDF here. Use Download PDF to open it.';
       obj.appendChild(fb); fig.appendChild(obj);
@@ -569,7 +576,7 @@
   function postHeight() {
     if (parent === window) return;
     var h = Math.ceil(root.getBoundingClientRect().height) + 4;
-    if (dlg.open) h = Math.max(h, 640); // give the popup room inside the frame
+    if (dlg.open) h = Math.max(h, 860); // give the popup room inside the frame
     parent.postMessage({ type: 'hp-embed-height', height: h }, '*');
   }
   if (window.ResizeObserver) new ResizeObserver(postHeight).observe(root);
