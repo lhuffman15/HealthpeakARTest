@@ -180,6 +180,13 @@
   .seg button { padding: 8px 16px; border: 0; background: #fff; color: #1d2327; font: 600 .86rem/1 inherit; font-family: inherit; cursor: pointer; }
   .seg button + button { border-left: 1px solid #8c8f94; }
   .seg button[aria-pressed="true"] { background: #2271b1; color: #fff; }
+  .wp-grid { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (max-width: 480px) { .wp-grid { grid-template-columns: minmax(0, 1fr); } }
+  .wp-field input[type="number"] { width: 100%; padding: 8px 10px; border: 1px solid #8c8f94; border-radius: 4px; font: inherit; font-size: .9rem; color: #1d2327; font-variant-numeric: tabular-nums; }
+  .wp-field input[type="number"]:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .wp-checks { display: flex; flex-wrap: wrap; gap: 6px 16px; padding-top: 6px; }
+  .wp-checks label { display: flex; gap: 6px; align-items: center; font-size: .88rem; color: #1d2327; cursor: pointer; }
+  .wp-checks input { width: 16px; height: 16px; accent-color: #2271b1; }
   .wp-actions { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; }
   .wp-update { padding: 9px 16px; border: 0; border-radius: 4px; background: #2271b1; color: #fff; font: 600 .88rem/1 inherit; font-family: inherit; cursor: pointer; }
   .wp-reset { padding: 0; border: 0; background: none; color: #2271b1; font: .82rem/1 inherit; font-family: inherit; text-decoration: underline; cursor: pointer; }
@@ -389,7 +396,7 @@
       <div>
         <p class="eyebrow">Try it · Option B</p>
         <h3>Change one entry, watch everything update</h3>
-        <p class="lede" style="font-size:1rem">Mark a space as leased the way a broker would in WordPress. The property page below and the search in Step 3 both update from that single change. Nobody edits the page by hand.</p>
+        <p class="lede" style="font-size:1rem">Edit a Portside space the way a broker would in WordPress: change its size, plan type or features, or mark it leased. The property page below and the search in Step 3 both update from that single change. Nobody edits the page by hand.</p>
       </div>
       <div class="sample-note is-small" role="note"><span class="bang" aria-hidden="true">!</span><p><strong style="display:inline">Sample data only.</strong> A limited sample of spaces from Portside and Gateway Crossing. Changes here are just for this demo and reset when the page reloads.</p></div>
       <div class="live-top">
@@ -399,6 +406,29 @@
             <div class="wp-field">
               <label for="wp-space">Space</label>
               <select id="wp-space"></select>
+            </div>
+            <div class="wp-grid">
+              <div class="wp-field">
+                <label for="wp-rsf">Rentable SF</label>
+                <input type="number" id="wp-rsf" inputmode="numeric" min="1000" step="1">
+              </div>
+              <div class="wp-field">
+                <label for="wp-cond">Plan type</label>
+                <select id="wp-cond">
+                  <option>Spec suite</option><option>Hypothetical plan</option><option>Shell</option><option>Full floor opportunity</option>
+                </select>
+              </div>
+              <div class="wp-field">
+                <label for="wp-when">Available</label>
+                <select id="wp-when"><option value="0">Now</option><option value="1">Q2 2027</option><option value="2">Q4 2027</option></select>
+              </div>
+              <div class="wp-field">
+                <span class="lbl">Lab features</span>
+                <div class="wp-checks">
+                  <label><input type="checkbox" id="wp-viv"> Vivarium</label>
+                  <label><input type="checkbox" id="wp-bsl"> BSL-2</label>
+                </div>
+              </div>
             </div>
             <div class="wp-field">
               <span class="lbl" id="wp-status-lbl">Status</span>
@@ -420,7 +450,7 @@
             <li id="rp-plan"><i aria-hidden="true">2</i><span>Site plan highlight<small>A building with no space left turns off</small></span></li>
             <li id="rp-search"><i aria-hidden="true">3</i><span>Filter list and chat results<small>See Step 3. The space appears or drops out</small></span></li>
           </ul>
-          <p class="status" id="rp-status">Pick a space, set its status, then press Update.</p>
+          <p class="status" id="rp-status">Pick a space, change anything, then press Update.</p>
         </div>
       </div>
       <div class="demo-frame">
@@ -655,11 +685,26 @@ window.addEventListener('message', function (e) {
   var sel = document.getElementById('wp-space'), btnA = document.getElementById('wp-avail'), btnL = document.getElementById('wp-leased');
   var status = document.getElementById('rp-status'), steps = ['rp-table', 'rp-plan', 'rp-search'].map(function (id) { return document.getElementById(id); });
   var pending = 'Available', timers = [];
-  SAMPLE.forEach(function (s) { var o = document.createElement('option'); o.value = s.id; o.textContent = s.prop + ' · ' + label(s) + ' (' + fmt(s.rsf) + ' RSF)'; sel.appendChild(o); });
-  sel.value = 'ps-331-2';
+  // Only Portside spaces here, so every edit shows up on the site plan right below
+  var ORIGINAL = JSON.stringify(SAMPLE);
+  var rsf = document.getElementById('wp-rsf'), cond = document.getElementById('wp-cond'), when = document.getElementById('wp-when'),
+      viv = document.getElementById('wp-viv'), bsl = document.getElementById('wp-bsl');
+  function fillOptions() {
+    var keep = sel.value; sel.innerHTML = '';
+    SAMPLE.filter(function (s) { return s.prop === 'Portside'; }).forEach(function (s) {
+      var o = document.createElement('option'); o.value = s.id; o.textContent = label(s) + ' (' + fmt(s.rsf) + ' RSF)'; sel.appendChild(o);
+    });
+    sel.value = keep || 'ps-331-2';
+  }
+  fillOptions();
   function current() { return SAMPLE.filter(function (s) { return s.id === sel.value; })[0]; }
   function setPending(v) { pending = v; btnA.setAttribute('aria-pressed', String(v === 'Available')); btnL.setAttribute('aria-pressed', String(v === 'Leased')); }
-  function reflect() { setPending(current().status); }
+  function reflect() {
+    var s = current(); setPending(s.status);
+    rsf.value = s.rsf; cond.value = s.cond; when.value = String(s.when);
+    viv.checked = s.feats.indexOf('Vivarium') > -1; bsl.checked = s.feats.indexOf('BSL-2') > -1;
+  }
+  reflect();
   sel.addEventListener('change', reflect);
   btnA.addEventListener('click', function () { setPending('Available'); });
   btnL.addEventListener('click', function () { setPending('Leased'); });
@@ -670,15 +715,23 @@ window.addEventListener('message', function (e) {
     status.textContent = msg;
   }
   document.getElementById('wp-update').addEventListener('click', function () {
-    var s = current(); s.status = pending;
-    sendToEmbed(); renderResults();
-    var where = s.prop === 'Portside' ? 'Look at the site plan and list below.' : 'Gateway Crossing’s own page would update the same way; its search results changed in Step 3.';
-    ripple('Saved: ' + label(s) + ' is now ' + pending.toLowerCase() + '. One change, every place updated. ' + where);
+    var n = Math.round(+rsf.value);
+    if (!n || n < 1000) { status.textContent = 'Enter the rentable SF as a number, like 25000.'; rsf.focus(); return; }
+    var s = current();
+    s.rsf = n; s.cond = cond.value; s.when = +when.value; s.status = pending;
+    s.feats = [];
+    if (s.cond === 'Spec suite') s.feats.push('Spec suite');
+    if (/Full floor/.test(s.cond)) s.feats.push('Full floor');
+    if (viv.checked) s.feats.push('Vivarium');
+    if (bsl.checked) s.feats.push('BSL-2');
+    fillOptions(); sendToEmbed(); renderResults();
+    ripple('Saved: ' + label(s) + ', ' + fmt(n) + ' RSF, ' + s.cond.toLowerCase() + ', ' + pending.toLowerCase() + '. One change, and the site plan, list and search all updated.');
   });
   document.getElementById('wp-reset').addEventListener('click', function () {
-    SAMPLE.forEach(function (s) { s.status = 'Available'; }); reflect(); sendToEmbed(); renderResults();
+    JSON.parse(ORIGINAL).forEach(function (o, i) { Object.assign(SAMPLE[i], o); });
+    fillOptions(); reflect(); sendToEmbed(); renderResults();
     steps.forEach(function (li, i) { li.classList.remove('is-done'); li.querySelector('i').textContent = String(i + 1); });
-    status.textContent = 'Sample data reset. Every space is available again.';
+    status.textContent = 'Sample data reset to the original values.';
   });
 })();
 
